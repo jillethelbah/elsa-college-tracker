@@ -401,6 +401,7 @@
       <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">📅 Calendar</button>
       <button class="tab" data-tab="map" onclick="switchTab('map')">🗺️ Map</button>
       <button class="tab" data-tab="journal" onclick="switchTab('journal')">📓 Journal</button>
+      <button class="tab" onclick="exportToExcel()" style="margin-left:auto;background:var(--purple-light);color:var(--purple);">📥 Export</button>
     </div>
 
     <!-- SCHOOLS PANEL -->
@@ -1012,6 +1013,7 @@
     updateStats();
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
   <script>
     // School coordinates lookup
     const schoolCoords = {
@@ -1037,6 +1039,35 @@
 
     let leafletMap = null;
     let mapMarkers = [];
+
+    function exportToExcel() {
+      const statusLabelsMap = {maybe:'Interested',like:'Visited',love:'Ready',applied:'Applied',accepted:'Accepted',notinterested:'Not Interested'};
+      const rows = schools.map(function(s) {
+        return {
+          Name: s.name,
+          Location: s.location || '',
+          Status: statusLabelsMap[s.interest] || s.interest,
+          Tuition: s.tuition || '',
+          'Room & Board': s.room || '',
+          Size: s.size || '',
+          Acceptance: s.acceptance || '',
+          Division: s.division || '',
+          Swim: s.swim || '',
+          'Coach Email': s.coach || '',
+          Website: s.url || '',
+          'Visit Date': s.visited || '',
+          Deadline: s.deadline || '',
+          Major: s.major || '',
+          Why: s.why || '',
+          Notes: (s.notes || []).join('; '),
+          'Date Added': s.addedDate ? new Date(s.addedDate).toLocaleDateString() : ''
+        };
+      });
+      var ws = XLSX.utils.json_to_sheet(rows);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Schools');
+      XLSX.writeFile(wb, 'Elsas_College_Tracker_' + new Date().toISOString().slice(0,10) + '.xlsx');
+    }
 
     function renderMap() {
       const container = document.getElementById('mapContainer');
