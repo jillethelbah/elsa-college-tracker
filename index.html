@@ -991,6 +991,7 @@
               </div>
             </div>
             ${s.why ? `<div class="notes-section"><h4>Why I'm Interested</h4><div class="note">${s.why}</div></div>` : ''}
+            ${linkedEventsHtml ? `<div class="notes-section"><h4>🔑 Key Events</h4>${linkedEventsHtml}</div>` : ''}
             <div class="notes-section">
               <h4>📝 Notes (${s.notes.length})</h4>
               ${notesHtml}
@@ -1011,7 +1012,6 @@
               <input type="file" id="photo-upload-${s.id}" accept="image/*" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
               <input type="file" id="photo-camera-${s.id}" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
             </div>
-            ${linkedEventsHtml ? `<div class="notes-section"><h4>🔑 Key Events</h4>${linkedEventsHtml}</div>` : ''}
             <div class="activity-section">
               <h4>📋 Activity History</h4>
               ${historyHtml}
