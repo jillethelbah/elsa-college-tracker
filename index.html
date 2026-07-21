@@ -970,25 +970,47 @@
     ];
 
     // Listen for real-time updates from Firebase
-    db.ref('schools').on('value', function(snapshot) {
-      var data = snapshot.val();
-      if (data) {
-        schools = Array.isArray(data) ? data : Object.values(data);
-        // Firebase drops empty arrays — restore defaults
-        schools = schools.filter(function(s) { return s != null; }).map(function(s) {
-          if (!s.notes) s.notes = [];
-          if (!s.photos) s.photos = [];
-          if (!s.history) s.history = [];
-          return s;
-        });
-      } else {
-        // First time — seed Firebase with default data
+    var firebaseLoaded = false;
+    try {
+      db.ref('schools').on('value', function(snapshot) {
+        firebaseLoaded = true;
+        var data = snapshot.val();
+        if (data) {
+          schools = Array.isArray(data) ? data : Object.values(data);
+          // Firebase drops empty arrays — restore defaults
+          schools = schools.filter(function(s) { return s != null; }).map(function(s) {
+            if (!s.notes) s.notes = [];
+            if (!s.photos) s.photos = [];
+            if (!s.history) s.history = [];
+            return s;
+          });
+        } else {
+          schools = defaultSchools;
+          db.ref('schools').set(schools);
+        }
+        renderSchools();
+        updateStats();
+      }, function(error) {
+        console.error('Firebase read error:', error);
         schools = defaultSchools;
-        db.ref('schools').set(schools);
-      }
+        renderSchools();
+        updateStats();
+      });
+    } catch(e) {
+      console.error('Firebase setup error:', e);
+      schools = defaultSchools;
       renderSchools();
       updateStats();
-    });
+    }
+    // Fallback: if Firebase hasn't loaded in 4 seconds, use defaults
+    setTimeout(function() {
+      if (!firebaseLoaded && schools.length === 0) {
+        console.warn('Firebase timeout — loading defaults');
+        schools = defaultSchools;
+        renderSchools();
+        updateStats();
+      }
+    }, 4000);
 
     // Calendar
     let calYear = new Date().getFullYear();
