@@ -621,6 +621,10 @@
         <div id="newActionFromEvent" style="display:none;margin-bottom:8px;">
           <input type="text" id="eventNewActionTitle" placeholder="New action title..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-family:var(--font);box-sizing:border-box;" />
         </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:12px;color:var(--text-secondary);">Link to School(s):</label>
+          <div id="eventSchoolChecks" style="max-height:120px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;margin-top:4px;background:#fff;"></div>
+        </div>
         <div style="display:flex;gap:8px;">
           <button onclick="saveKeyEvent()" style="flex:1;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px;cursor:pointer;font-weight:600;">Save</button>
           <button onclick="hideAddEventForm()" style="flex:1;background:#fff;color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;">Cancel</button>
@@ -934,6 +938,16 @@
         }).join('') : '<div style="font-size:12px;color:#aaa;padding:4px 0;">No activity yet — edit fields or add notes to see history here.</div>';
 
         const coachDisplay = s.coach ? `<a href="mailto:${s.coach}" onclick="event.stopPropagation()">${s.coach}</a>` : '';
+        // Key events linked to this school
+        const linkedEvents = keyEvents.filter(ke => (ke.schoolIds || []).indexOf(s.id) !== -1);
+        const linkedEventsHtml = linkedEvents.length > 0 ? linkedEvents.map(ke => {
+          const evDate = new Date(ke.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0eef5;">
+            <span style="background:#7b68ee;color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600;">🔑 Event</span>
+            <span style="font-size:13px;font-weight:600;">${ke.title}</span>
+            <span style="font-size:11px;color:var(--text-secondary);margin-left:auto;">${evDate}</span>
+          </div>`;
+        }).join('') : '';
         const urlDisplay = s.url ? `<a href="${s.url}" target="_blank" onclick="event.stopPropagation()">${s.url.replace('https://','')}</a>` : '';
 
         return `
@@ -997,6 +1011,7 @@
               <input type="file" id="photo-upload-${s.id}" accept="image/*" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
               <input type="file" id="photo-camera-${s.id}" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
             </div>
+            ${linkedEventsHtml ? `<div class="notes-section"><h4>🔑 Key Events</h4>${linkedEventsHtml}</div>` : ''}
             <div class="activity-section">
               <h4>📋 Activity History</h4>
               ${historyHtml}
@@ -1291,6 +1306,11 @@
       select.onchange = function() {
         document.getElementById('newActionFromEvent').style.display = this.value === '__new__' ? 'block' : 'none';
       };
+      // Populate school checkboxes
+      var schoolChecks = document.getElementById('eventSchoolChecks');
+      schoolChecks.innerHTML = schools.map(function(s) {
+        return '<label style="display:block;padding:3px 0;font-size:12px;cursor:pointer;"><input type="checkbox" value="' + s.id + '" style="margin-right:6px;" />' + s.name + '</label>';
+      }).join('');
     }
     function hideAddEventForm() {
       document.getElementById('addEventForm').style.display = 'none';
@@ -1314,10 +1334,16 @@
         saveActions(items);
         actionLink = newAction.id;
       }
-      keyEvents.push({ id: 'ke' + Date.now(), title: title, date: date, actionId: actionLink || '' });
+      // Get selected schools
+      var schoolIds = [];
+      document.querySelectorAll('#eventSchoolChecks input:checked').forEach(function(cb) {
+        schoolIds.push(cb.value);
+      });
+      keyEvents.push({ id: 'ke' + Date.now(), title: title, date: date, actionId: actionLink || '', schoolIds: schoolIds });
       db.ref('keyEvents').set(keyEvents);
       hideAddEventForm();
       renderCalendar();
+      if (schoolIds.length > 0) renderSchools();
     }
 
     // Init (Firebase listener handles initial render)
