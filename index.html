@@ -370,9 +370,9 @@
 
   <div class="stats-bar" id="statsBar">
     <div class="stat stat--total"><div class="stat__number" id="statTotal">0</div><div class="stat__label">Schools</div></div>
-    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Love</div></div>
-    <div class="stat stat--like"><div class="stat__number" id="statLike">0</div><div class="stat__label">💚 Like</div></div>
-    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">🧡 Maybe</div></div>
+    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Ready to Apply</div></div>
+    <div class="stat stat--like"><div class="stat__number" id="statLike">0</div><div class="stat__label">💚 Visited</div></div>
+    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">🧡 Considering</div></div>
   </div>
 
   <div class="container">
@@ -392,9 +392,9 @@
       </div>
       <div class="filter-bar" id="filterBar">
         <button class="filter-chip active" data-filter="all" onclick="filterSchools('all')">All</button>
-        <button class="filter-chip" data-filter="love" onclick="filterSchools('love')">💜 Love</button>
-        <button class="filter-chip" data-filter="like" onclick="filterSchools('like')">💚 Like</button>
-        <button class="filter-chip" data-filter="maybe" onclick="filterSchools('maybe')">🧡 Maybe</button>
+        <button class="filter-chip" data-filter="love" onclick="filterSchools('love')">💜 Ready to Apply</button>
+        <button class="filter-chip" data-filter="like" onclick="filterSchools('like')">💚 Visited</button>
+        <button class="filter-chip" data-filter="maybe" onclick="filterSchools('maybe')">🧡 Considering</button>
         <button class="filter-chip" data-filter="applied" onclick="filterSchools('applied')">💙 Applied</button>
         <button class="filter-chip" data-filter="accepted" onclick="filterSchools('accepted')">💚 Accepted</button>
       </div>
@@ -417,9 +417,9 @@
           <div class="form-group">
             <label>Interest Level</label>
             <select id="schoolInterest">
-              <option value="love">💜 Love It!</option>
-              <option value="like">💚 Like It</option>
-              <option value="maybe">🧡 Maybe</option>
+              <option value="maybe" selected>🧡 Considering</option>
+              <option value="like">💚 Visited</option>
+              <option value="love">💜 Ready to Apply</option>
             </select>
           </div>
           <div class="form-group">
@@ -589,7 +589,7 @@
 
       // Reset form
       ['schoolName','schoolLocation','schoolDeadline','schoolMajor','schoolWhy','schoolTuition','schoolRoom','schoolDivision','schoolAcceptance','schoolSwim','schoolCoach','schoolUrl','schoolVisited'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('schoolInterest').value = 'love';
+      document.getElementById('schoolInterest').value = 'maybe';
       document.getElementById('schoolSize').value = '';
       document.getElementById('schoolPhotos').value = '';
       document.getElementById('photoPreview').innerHTML = '';
@@ -783,7 +783,7 @@
           if (h.action === 'photo') return `<div class="activity-item"><span class="activity-icon">📸</span><div class="activity-content">Added ${h.count} photo(s)<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'edit') return `<div class="activity-item"><span class="activity-icon">✏️</span><div class="activity-content">Changed ${h.field}: ${h.oldVal||'(empty)'} → ${h.newVal||'(empty)'}<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'status') {
-            const labels = {love:'💜 Love',like:'💚 Like',maybe:'🧡 Maybe',applied:'💙 Applied',accepted:'💚 Accepted'};
+            const labels = {love:'💜 Ready to Apply',like:'💚 Visited',maybe:'🧡 Considering',applied:'💙 Applied',accepted:'💚 Accepted'};
             return `<div class="activity-item"><span class="activity-icon">🏷️</span><div class="activity-content">Status: ${labels[h.oldVal]||h.oldVal} → ${labels[h.newVal]||h.newVal}<div class="activity-date">${dateStr}</div></div></div>`;
           }
           return '';
@@ -801,7 +801,7 @@
             </div>
             <div class="card-actions">
               <span class="interest-badge" data-interest="${s.interest}">${
-                {love:'💜 Love',like:'💚 Like',maybe:'🧡 Maybe',applied:'💙 Applied',accepted:'💚 Accepted'}[s.interest]
+                {love:'💜 Ready to Apply',like:'💚 Visited',maybe:'🧡 Considering',applied:'💙 Applied',accepted:'💚 Accepted'}[s.interest]
               }</span>
               <button class="btn-icon" onclick="event.stopPropagation();deleteSchool('${s.id}')" title="Remove">🗑️</button>
             </div>
@@ -822,9 +822,9 @@
               <div class="detail-item">
                 <label>Status</label>
                 <select onchange="changeInterest('${s.id}',this.value)" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-                  <option value="love" ${s.interest==='love'?'selected':''}>💜 Love</option>
-                  <option value="like" ${s.interest==='like'?'selected':''}>💚 Like</option>
-                  <option value="maybe" ${s.interest==='maybe'?'selected':''}>🧡 Maybe</option>
+                  <option value="maybe" ${s.interest==='maybe'?'selected':''}>🧡 Considering</option>
+                  <option value="like" ${s.interest==='like'?'selected':''}>💚 Visited</option>
+                  <option value="love" ${s.interest==='love'?'selected':''}>💜 Ready to Apply</option>
                   <option value="applied" ${s.interest==='applied'?'selected':''}>💙 Applied</option>
                   <option value="accepted" ${s.interest==='accepted'?'selected':''}>💚 Accepted</option>
                 </select>
