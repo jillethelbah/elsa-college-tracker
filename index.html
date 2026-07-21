@@ -1013,7 +1013,6 @@
     updateStats();
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
   <script>
     // School coordinates lookup
     const schoolCoords = {
@@ -1042,31 +1041,23 @@
 
     function exportToExcel() {
       const statusLabelsMap = {maybe:'Interested',like:'Visited',love:'Ready',applied:'Applied',accepted:'Accepted',notinterested:'Not Interested'};
+      const headers = ['Name','Location','Status','Tuition','Room & Board','Size','Acceptance','Division','Swim','Coach Email','Website','Visit Date','Deadline','Major','Why','Notes','Date Added'];
       const rows = schools.map(function(s) {
-        return {
-          Name: s.name,
-          Location: s.location || '',
-          Status: statusLabelsMap[s.interest] || s.interest,
-          Tuition: s.tuition || '',
-          'Room & Board': s.room || '',
-          Size: s.size || '',
-          Acceptance: s.acceptance || '',
-          Division: s.division || '',
-          Swim: s.swim || '',
-          'Coach Email': s.coach || '',
-          Website: s.url || '',
-          'Visit Date': s.visited || '',
-          Deadline: s.deadline || '',
-          Major: s.major || '',
-          Why: s.why || '',
-          Notes: (s.notes || []).join('; '),
-          'Date Added': s.addedDate ? new Date(s.addedDate).toLocaleDateString() : ''
-        };
+        return [
+          s.name, s.location||'', statusLabelsMap[s.interest]||s.interest, s.tuition||'', s.room||'',
+          s.size||'', s.acceptance||'', s.division||'', s.swim||'', s.coach||'', s.url||'',
+          s.visited||'', s.deadline||'', s.major||'', s.why||'',
+          (s.notes||[]).join('; '), s.addedDate ? new Date(s.addedDate).toLocaleDateString() : ''
+        ];
       });
-      var ws = XLSX.utils.json_to_sheet(rows);
-      var wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Schools');
-      XLSX.writeFile(wb, 'Elsas_College_Tracker_' + new Date().toISOString().slice(0,10) + '.xlsx');
+      var csv = [headers].concat(rows).map(function(r){
+        return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
+      }).join('\n');
+      var blob = new Blob([csv], {type:'text/csv'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Elsas_College_Tracker_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
     }
 
     function renderMap() {
