@@ -542,7 +542,7 @@
 
 
   <script>
-    let schools = JSON.parse(localStorage.getItem('elsaColleges3') || '[]');
+    let schools = JSON.parse(localStorage.getItem('elsaColleges4') || '[]');
     let currentFilter = 'all';
     let searchQuery = '';
 
@@ -861,13 +861,13 @@
     }
 
     // Save
-    function save() { localStorage.setItem('elsaColleges3', JSON.stringify(schools)); }
+    function save() { localStorage.setItem('elsaColleges4', JSON.stringify(schools)); }
 
     // Pre-populate with spreadsheet data on first load
-    if (!localStorage.getItem('elsaColleges3')) {
+    if (!localStorage.getItem('elsaColleges4')) {
       schools = [
         {id:"1",name:"San Jose State University",location:"San Jose, CA",interest:"maybe",tuition:"$12K WUE",room:"$19K",size:"27,111",acceptance:"96%",division:"DI (Mountain West)",swim:"DI Mountain West women's swim & dive",coach:"sage.hopkins@sjsu.edu",url:"https://www.sjsu.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"2",name:"University of Washington Seattle",location:"Seattle, WA",interest:"maybe",tuition:"$13K (in-state)",room:"$18.9K",size:"45,097",acceptance:"39%",division:"DI (Big Ten)",swim:"No active NCAA swim team",coach:"",url:"https://www.washington.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"2",name:"University of Washington Seattle",location:"Seattle, WA",interest:"maybe",tuition:"$13K (in-state)",room:"$18.9K",size:"45,097",acceptance:"39%",division:"DI (Big Ten)",swim:"No active NCAA swim team",coach:"",url:"https://www.washington.edu",visited:"2026-08-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"3",name:"University of Utah",location:"Salt Lake City, UT",interest:"maybe",tuition:"$18K WUE",room:"$14K",size:"26,041",acceptance:"87%",division:"DI (Big 12)",swim:"Power-conference DI swim & dive; R1",coach:"",url:"https://www.utah.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"4",name:"Northern Arizona University",location:"Flagstaff, AZ",interest:"maybe",tuition:"$20K",room:"$11.7K",size:"22,991",acceptance:"90%",division:"DI",swim:"Strong conference contender",coach:"Andy.Johns@nau.edu",url:"https://www.nau.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"5",name:"University of Arizona",location:"Tucson, AZ",interest:"maybe",tuition:"$21K WUE",room:"$15K",size:"45,025",acceptance:"86%",division:"DI (Big 12)",swim:"Power-conference DI swim & dive; NCAA level program",coach:"",url:"https://www.arizona.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
