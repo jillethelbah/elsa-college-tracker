@@ -1041,13 +1041,13 @@
     function renderMap() {
       const container = document.getElementById('mapContainer');
       if (!leafletMap) {
-        leafletMap = L.map('mapContainer', { scrollWheelZoom: true }).setView([36.5, -119.5], 6);
+        leafletMap = L.map('mapContainer', { scrollWheelZoom: true }).setView([37.5, -120], 6);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
           maxZoom: 19
         }).addTo(leafletMap);
       }
-      setTimeout(function(){ leafletMap.invalidateSize(); }, 100);
+      setTimeout(function(){ leafletMap.invalidateSize(); leafletMap.setView([37.5, -120], 6); }, 150);
 
       // Clear old markers
       mapMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
