@@ -394,7 +394,6 @@
     .cal-event.deadline { background: #e05555; }
     .cal-event.visit { background: #4ea8b5; }
     .cal-event.action { background: #e6b800; }
-    .cal-event.keyevent { background: #7b68ee; }
     .cal-legend { display: flex; gap: 12px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-secondary); flex-wrap: wrap; }
     .cal-legend span { display: flex; align-items: center; gap: 4px; }
     .cal-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
@@ -447,7 +446,7 @@
     <div class="tabs">
       <button class="tab active" data-tab="schools" onclick="switchTab('schools')">🎓 Schools</button>
       <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">📅 Calendar</button>
-      <button class="tab" data-tab="actions" onclick="switchTab('actions')">📋 Actions/Events</button>
+      <button class="tab" data-tab="actions" onclick="switchTab('actions')">📋 Actions</button>
       <button class="tab" data-tab="map" onclick="switchTab('map')">🗺️ Map</button>
       <button class="tab" data-tab="journal" onclick="switchTab('journal')">📓 Journal</button>
       <button class="tab" onclick="exportToExcel()" style="margin-left:auto;background:var(--purple-light);color:var(--purple);">📥 Export</button>
@@ -572,26 +571,6 @@
           <button onclick="addActionItem()">Add</button>
         </div>
       </div>
-      <div style="margin-top:20px;border-top:2px solid var(--border);padding-top:16px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <h3 style="margin:0;font-size:15px;color:var(--text-primary);">🔑 Key Events</h3>
-          <button onclick="showAddEventForm()" style="background:var(--purple);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:600;">+ Add Key Event</button>
-        </div>
-        <div id="keyEventsList"></div>
-        <div id="addEventForm" style="display:none;margin-top:12px;padding:14px;background:var(--purple-light);border-radius:12px;">
-          <div style="font-weight:700;margin-bottom:8px;color:var(--text-primary);">Add Key Event</div>
-          <input type="text" id="eventTitle" placeholder="Event name..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;font-family:var(--font);box-sizing:border-box;" />
-          <input type="date" id="eventDate" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;font-family:var(--font);box-sizing:border-box;" />
-          <div style="margin-bottom:8px;">
-            <label style="font-size:12px;color:var(--text-secondary);">Link to School(s):</label>
-            <div id="eventSchoolChecks" style="max-height:120px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;margin-top:4px;background:#fff;"></div>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button onclick="saveKeyEvent()" style="flex:1;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px;cursor:pointer;font-weight:600;">Save</button>
-            <button onclick="hideAddEventForm()" style="flex:1;background:#fff;color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;">Cancel</button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- MAP PANEL -->
@@ -622,23 +601,6 @@
         <span><span class="cal-dot" style="background:#e05555;"></span> Deadline</span>
         <span><span class="cal-dot" style="background:#4ea8b5;"></span> Visit</span>
         <span><span class="cal-dot" style="background:#e6b800;"></span> Action Due</span>
-        <span><span class="cal-dot" style="background:#7b68ee;"></span> Key Event</span>
-      </div>
-      <div style="text-align:center;margin-top:12px;">
-        <button onclick="showAddEventFormCal()" style="background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;">+ Add Key Event</button>
-      </div>
-      <div id="addEventFormCal" style="display:none;margin-top:12px;padding:14px;background:var(--purple-light);border-radius:12px;">
-        <div style="font-weight:700;margin-bottom:8px;color:var(--text-primary);">Add Key Event</div>
-        <input type="text" id="eventTitleCal" placeholder="Event name..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;font-family:var(--font);box-sizing:border-box;" />
-        <input type="date" id="eventDateCal" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;font-family:var(--font);box-sizing:border-box;" />
-        <div style="margin-bottom:8px;">
-          <label style="font-size:12px;color:var(--text-secondary);">Link to School(s):</label>
-          <div id="eventSchoolChecksCal" style="max-height:120px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;margin-top:4px;background:#fff;"></div>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button onclick="saveKeyEventCal()" style="flex:1;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px;cursor:pointer;font-weight:600;">Save</button>
-          <button onclick="document.getElementById('addEventFormCal').style.display='none'" style="flex:1;background:#fff;color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;">Cancel</button>
-        </div>
       </div>
     </div>
 
@@ -679,7 +641,7 @@
       if (tab === 'journal') renderJournal();
       if (tab === 'map') renderMap();
       if (tab === 'calendar') renderCalendar();
-      if (tab === 'actions') { renderActions(); renderKeyEvents(); }
+      if (tab === 'actions') { renderActions(); }
     }
 
     // Search
@@ -948,16 +910,6 @@
         }).join('') : '<div style="font-size:12px;color:#aaa;padding:4px 0;">No activity yet — edit fields or add notes to see history here.</div>';
 
         const coachDisplay = s.coach ? `<a href="mailto:${s.coach}" onclick="event.stopPropagation()">${s.coach}</a>` : '';
-        // Key events linked to this school
-        const linkedEvents = keyEvents.filter(ke => (ke.schoolIds || []).indexOf(s.id) !== -1);
-        const linkedEventsHtml = linkedEvents.length > 0 ? linkedEvents.map(ke => {
-          const evDate = new Date(ke.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0eef5;">
-            <span style="background:#7b68ee;color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600;">🔑 Event</span>
-            <span style="font-size:13px;font-weight:600;">${ke.title}</span>
-            <span style="font-size:11px;color:var(--text-secondary);margin-left:auto;">${evDate}</span>
-          </div>`;
-        }).join('') : '';
         const urlDisplay = s.url ? `<a href="${s.url}" target="_blank" onclick="event.stopPropagation()">${s.url.replace('https://','')}</a>` : '';
 
         return `
@@ -1001,7 +953,6 @@
               </div>
             </div>
             ${s.why ? `<div class="notes-section"><h4>Why I'm Interested</h4><div class="note">${s.why}</div></div>` : ''}
-            ${linkedEventsHtml ? `<div class="notes-section"><h4>🔑 Key Events</h4>${linkedEventsHtml}</div>` : ''}
             <div class="notes-section">
               <h4>📝 Notes (${s.notes.length})</h4>
               ${notesHtml}
@@ -1195,14 +1146,6 @@
         }
       });
 
-      // Add key events
-      keyEvents.forEach(function(ke) {
-        var kd = normalizeDate(ke.date);
-        if (kd) {
-          if (!events[kd]) events[kd] = [];
-          events[kd].push({ name: ke.title, type: 'keyevent', id: ke.id, actionId: ke.actionId });
-        }
-      });
 
       var firstDay = new Date(calYear, calMonth, 1).getDay();
       var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
@@ -1246,11 +1189,6 @@
           html += '<div class="cal-event action" onclick="switchTab(\'actions\')" title="' + anames + '">⚡ ' + actionItems.length + ' actions</div>';
         }
 
-        var keyEvts = dayEvents.filter(function(e){ return e.type === 'keyevent'; });
-        keyEvts.forEach(function(ke) {
-          var onclick = ke.actionId ? "switchTab('actions')" : "";
-          html += '<div class="cal-event keyevent" onclick="' + onclick + '" title="' + ke.name + '">🔑 ' + ke.name + '</div>';
-        });
 
         html += '</div>';
       }
@@ -1295,104 +1233,6 @@
       document.body.appendChild(popup);
     }
 
-    // === KEY EVENTS ===
-    var keyEvents = [];
-    db.ref('keyEvents').on('value', function(snapshot) {
-      var data = snapshot.val();
-      keyEvents = data ? (Array.isArray(data) ? data : Object.values(data)).filter(function(e){ return e != null; }) : [];
-      // Re-render calendar if visible
-      if (document.getElementById('panel-calendar').classList.contains('active')) renderCalendar();
-      // Re-render key events list if actions tab visible
-      if (document.getElementById('panel-actions').classList.contains('active')) renderKeyEvents();
-    });
-
-    function renderKeyEvents() {
-      var el = document.getElementById('keyEventsList');
-      if (!el) return;
-      if (keyEvents.length === 0) {
-        el.innerHTML = '<div style="font-size:12px;color:var(--text-secondary);padding:8px 0;">No key events yet.</div>';
-        return;
-      }
-      var sorted = keyEvents.slice().sort(function(a, b) {
-        if (a.date && b.date) return a.date.localeCompare(b.date);
-        return 0;
-      });
-      el.innerHTML = sorted.map(function(ke) {
-        var dateStr = ke.date ? new Date(ke.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-        var schoolNames = (ke.schoolIds || []).map(function(sid) {
-          var s = schools.find(function(sc){ return sc.id === sid; });
-          return s ? s.name : '';
-        }).filter(function(n){ return n; });
-        var schoolBadges = schoolNames.length > 0 ? '<div style="margin-top:4px;">' + schoolNames.map(function(n){ return '<span style="background:#eee8ff;color:#7b68ee;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600;margin-right:4px;">' + n + '</span>'; }).join('') + '</div>' : '';
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">' +
-          '<span style="background:#7b68ee;color:#fff;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;white-space:nowrap;">' + dateStr + '</span>' +
-          '<div style="flex:1;"><div style="font-weight:600;font-size:13px;">' + ke.title + '</div>' + schoolBadges + '</div>' +
-          '<button onclick="deleteKeyEvent(\'' + ke.id + '\')" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary);">✕</button>' +
-          '</div>';
-      }).join('');
-    }
-
-    function deleteKeyEvent(id) {
-      keyEvents = keyEvents.filter(function(ke){ return ke.id !== id; });
-      db.ref('keyEvents').set(keyEvents);
-      renderKeyEvents();
-      renderSchools();
-    }
-
-    function showAddEventForm() {
-      document.getElementById('addEventForm').style.display = 'block';
-      // Populate school checkboxes
-      var schoolChecks = document.getElementById('eventSchoolChecks');
-      schoolChecks.innerHTML = schools.map(function(s) {
-        return '<label style="display:block;padding:3px 0;font-size:12px;cursor:pointer;"><input type="checkbox" value="' + s.id + '" style="margin-right:6px;" />' + s.name + '</label>';
-      }).join('');
-    }
-    function hideAddEventForm() {
-      document.getElementById('addEventForm').style.display = 'none';
-      document.getElementById('eventTitle').value = '';
-      document.getElementById('eventDate').value = '';
-    }
-    function saveKeyEvent() {
-      var title = document.getElementById('eventTitle').value.trim();
-      var date = document.getElementById('eventDate').value;
-      if (!title || !date) { alert('Please enter a title and date.'); return; }
-      // Get selected schools
-      var schoolIds = [];
-      document.querySelectorAll('#eventSchoolChecks input:checked').forEach(function(cb) {
-        schoolIds.push(cb.value);
-      });
-      keyEvents.push({ id: 'ke' + Date.now(), title: title, date: date, schoolIds: schoolIds });
-      db.ref('keyEvents').set(keyEvents);
-      hideAddEventForm();
-      renderKeyEvents();
-      renderCalendar();
-      if (schoolIds.length > 0) renderSchools();
-    }
-
-    // Calendar-page version of add key event
-    function showAddEventFormCal() {
-      document.getElementById('addEventFormCal').style.display = 'block';
-      var schoolChecks = document.getElementById('eventSchoolChecksCal');
-      schoolChecks.innerHTML = schools.map(function(s) {
-        return '<label style="display:block;padding:3px 0;font-size:12px;cursor:pointer;"><input type="checkbox" value="' + s.id + '" style="margin-right:6px;" />' + s.name + '</label>';
-      }).join('');
-    }
-    function saveKeyEventCal() {
-      var title = document.getElementById('eventTitleCal').value.trim();
-      var date = document.getElementById('eventDateCal').value;
-      if (!title || !date) { alert('Please enter a title and date.'); return; }
-      var schoolIds = [];
-      document.querySelectorAll('#eventSchoolChecksCal input:checked').forEach(function(cb) {
-        schoolIds.push(cb.value);
-      });
-      keyEvents.push({ id: 'ke' + Date.now(), title: title, date: date, schoolIds: schoolIds });
-      db.ref('keyEvents').set(keyEvents);
-      document.getElementById('addEventFormCal').style.display = 'none';
-      document.getElementById('eventTitleCal').value = '';
-      document.getElementById('eventDateCal').value = '';
-      renderCalendar();
-      if (schoolIds.length > 0) renderSchools();
-    }
 
     // Init (Firebase listener handles initial render)
     // renderSchools();
