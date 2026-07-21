@@ -412,6 +412,19 @@
 </head>
 <body>
 
+  <!-- PIN GATE -->
+  <div id="pinGate" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#f0f0f8 0%,#eee8ff 100%);z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:40px;border-radius:20px;box-shadow:0 8px 40px rgba(100,80,160,0.15);text-align:center;max-width:360px;width:90%;">
+      <h2 style="font-family:'Segoe UI',sans-serif;color:#2d2b3d;margin-bottom:8px;">🎓 Elsa's College Tracker</h2>
+      <p style="font-family:'Segoe UI',sans-serif;color:#7c7a8e;font-size:14px;margin-bottom:24px;">Enter the password to continue</p>
+      <input type="password" id="pinInput" placeholder="Password" style="width:100%;padding:14px 16px;border:2px solid #d8d5e8;border-radius:12px;font-size:16px;font-family:'Segoe UI',sans-serif;outline:none;text-align:center;" onkeydown="if(event.key==='Enter')checkPin()" />
+      <button onclick="checkPin()" style="margin-top:16px;width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#7b68ee 0%,#a855c6 100%);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;">Enter</button>
+      <p id="pinError" style="color:#e05555;font-size:13px;margin-top:12px;display:none;font-family:'Segoe UI',sans-serif;">Incorrect password. Try again.</p>
+    </div>
+  </div>
+
+  <div id="appContent" style="display:none;">
+
   <header class="header">
     <h1>Elsa's College Tracker 🎓</h1>
     <p>Building Tomorrow, One Application at a Time ✨</p>
@@ -1260,5 +1273,30 @@
     .light-popup .leaflet-popup-tip { background: #fff; }
     .light-popup .leaflet-popup-close-button { color: #7c7a8e; }
   </style>
+
+  </div><!-- end appContent -->
+
+  <script>
+  function checkPin() {
+    var input = document.getElementById('pinInput').value;
+    if (input === 'Elsa2027') {
+      localStorage.setItem('elsaTrackerAuth', 'true');
+      showApp();
+    } else {
+      document.getElementById('pinError').style.display = 'block';
+      document.getElementById('pinInput').value = '';
+    }
+  }
+  function showApp() {
+    document.getElementById('pinGate').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+  }
+  // Check on load
+  if (localStorage.getItem('elsaTrackerAuth') === 'true') {
+    showApp();
+  } else {
+    document.getElementById('pinGate').style.display = 'flex';
+  }
+  </script>
 </body>
 </html>
