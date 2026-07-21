@@ -262,20 +262,23 @@
 
     /* Search bar */
     .search-bar {
-      position: relative; margin-bottom: 12px;
+      position: relative; margin-bottom: 12px; display: flex; gap: 10px; align-items: center;
+    }
+    .search-bar .search-wrap {
+      position: relative; flex: 1;
     }
     .search-bar input {
-      width: 100%; padding: 12px 16px 12px 42px;
+      width: 100%; padding: 10px 14px 10px 36px;
       border: 2px solid var(--border); border-radius: 14px;
-      font-family: var(--font); font-size: 15px;
+      font-family: var(--font); font-size: 14px;
       background: var(--surface); color: var(--text); outline: none;
       transition: border-color 0.2s;
     }
     .search-bar input:focus { border-color: var(--purple); }
     .search-bar input::placeholder { color: #aaa; }
     .search-bar .search-icon {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      font-size: 18px; color: var(--text-secondary); pointer-events: none;
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 16px; color: var(--text-secondary); pointer-events: none;
     }
     .search-bar .search-clear {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -283,6 +286,33 @@
       color: var(--text-secondary); display: none;
     }
     .search-bar .search-clear.visible { display: block; }
+    .btn-add-inline {
+      padding: 10px 16px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      color: #fff; font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; transition: transform 0.15s;
+    }
+    .btn-add-inline:hover { transform: scale(1.03); }
+
+    /* Actions panel */
+    .action-item {
+      background: var(--surface); border-radius: var(--radius); padding: 14px 16px;
+      margin-bottom: 10px; border: 1px solid var(--border); box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .action-item a { color: var(--purple); font-weight: 600; text-decoration: none; font-size: 14px; }
+    .action-item a:hover { text-decoration: underline; }
+    .action-item .action-desc { flex: 1; font-size: 13px; color: var(--text-secondary); }
+    .action-item select {
+      padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 12px; background: #fff; color: var(--text);
+      cursor: pointer;
+    }
+    .action-section { margin-bottom: 20px; }
+    .action-section h3 { font-size: 15px; margin-bottom: 10px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .action-add-row { display: flex; gap: 8px; margin-top: 12px; }
+    .action-add-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-family: var(--font); font-size: 13px; }
+    .action-add-row button { padding: 10px 16px; border: none; border-radius: 10px; background: var(--purple); color: #fff; font-weight: 700; cursor: pointer; font-family: var(--font); }
 
     /* Filter/Sort bar */
     .filter-bar {
@@ -397,8 +427,8 @@
 
     <div class="tabs">
       <button class="tab active" data-tab="schools" onclick="switchTab('schools')">🎓 Schools</button>
-      <button class="tab" data-tab="add" onclick="switchTab('add')">➕ Add New</button>
       <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">📅 Calendar</button>
+      <button class="tab" data-tab="actions" onclick="switchTab('actions')">📋 Actions</button>
       <button class="tab" data-tab="map" onclick="switchTab('map')">🗺️ Map</button>
       <button class="tab" data-tab="journal" onclick="switchTab('journal')">📓 Journal</button>
       <button class="tab" onclick="exportToExcel()" style="margin-left:auto;background:var(--purple-light);color:var(--purple);">📥 Export</button>
@@ -407,9 +437,12 @@
     <!-- SCHOOLS PANEL -->
     <div class="panel active" id="panel-schools">
       <div class="search-bar">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search schools..." oninput="searchSchools(this.value)" />
-        <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search schools..." oninput="searchSchools(this.value)" />
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
+        </div>
+        <button class="btn-add-inline" onclick="switchTab('add')">➕ Add New</button>
       </div>
       <div class="filter-bar" id="filterBar">
         <button class="filter-chip active" data-filter="all" onclick="filterSchools('all')">All</button>
@@ -503,6 +536,19 @@
       </div>
     </div>
 
+    <!-- ACTIONS PANEL -->
+    <div class="panel" id="panel-actions">
+      <div class="action-section">
+        <h3>🎓 Scholarship Resources</h3>
+        <div id="actionsList"></div>
+        <div class="action-add-row">
+          <input type="text" id="newActionTitle" placeholder="Add link title..." />
+          <input type="text" id="newActionUrl" placeholder="URL (optional)" style="flex:0.7;" />
+          <button onclick="addActionItem()">Add</button>
+        </div>
+      </div>
+    </div>
+
     <!-- MAP PANEL -->
     <div class="panel" id="panel-map">
       <div id="mapContainer"></div>
@@ -555,6 +601,7 @@
       if (tab === 'journal') renderJournal();
       if (tab === 'map') renderMap();
       if (tab === 'calendar') renderCalendar();
+      if (tab === 'actions') renderActions();
     }
 
     // Search
@@ -1038,6 +1085,71 @@
 
     let leafletMap = null;
     let mapMarkers = [];
+
+    // === ACTIONS / KEY LINKS ===
+    const defaultActions = [
+      {id:'a1',title:'Bold.org',url:'https://bold.org',desc:'Massive database of scholarships; no‑essay, merit, athletic, and identity‑based awards.',status:'notstarted'},
+      {id:'a2',title:'AdmissionSight Scholarship Directory',url:'https://admissionsight.com/scholarships',desc:'Curated list of 100 top scholarships for high school students.',status:'notstarted'},
+      {id:'a3',title:'Scholarships.com',url:'https://www.scholarships.com',desc:'Large national database; filters by grade level, identity, and major.',status:'notstarted'},
+      {id:'a4',title:'The College Monk',url:'https://www.thecollegemonk.com/scholarships',desc:'Verified list of senior‑year scholarships with timelines and strategies.',status:'notstarted'},
+      {id:'a5',title:'CollegeWhale',url:'https://collegewhale.com/scholarships/high-school',desc:'300+ verified scholarships for high school students.',status:'notstarted'},
+      {id:'a6',title:'College Board BigFuture',url:'https://bigfuture.collegeboard.org/scholarships',desc:'National database plus automatic scholarships tied to college planning.',status:'notstarted'},
+      {id:'a7',title:'Scholarship America',url:'https://scholarshipamerica.org/students/',desc:'Hosts major national scholarships and corporate awards.',status:'notstarted'},
+      {id:'a8',title:'Fastweb',url:'https://www.fastweb.com',desc:'One of the largest scholarship search engines; personalized matching.',status:'notstarted'},
+      {id:'a9',title:'Going Merry',url:'https://www.goingmerry.com',desc:'Apply to multiple scholarships with one profile.',status:'notstarted'},
+      {id:'a10',title:'Niche Scholarships',url:'https://www.niche.com/colleges/scholarships/',desc:'Merit, athletic, and interest‑based scholarships.',status:'notstarted'}
+    ];
+
+    function getActions() {
+      var stored = localStorage.getItem('elsaActions');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('elsaActions', JSON.stringify(defaultActions));
+      return defaultActions;
+    }
+    function saveActions(items) { localStorage.setItem('elsaActions', JSON.stringify(items)); }
+
+    function renderActions() {
+      var items = getActions();
+      var html = '';
+      items.forEach(function(item) {
+        var linkHtml = item.url ? '<a href="' + item.url + '" target="_blank">' + item.title + '</a>' : '<strong>' + item.title + '</strong>';
+        html += '<div class="action-item">' +
+          '<div style="flex:1;">' + linkHtml + '<div class="action-desc">' + (item.desc || '') + '</div></div>' +
+          '<select onchange="updateActionStatus(\'' + item.id + '\',this.value)">' +
+          '<option value="notstarted"' + (item.status==='notstarted'?' selected':'') + '>To be started</option>' +
+          '<option value="inprogress"' + (item.status==='inprogress'?' selected':'') + '>In Progress</option>' +
+          '<option value="awaiting"' + (item.status==='awaiting'?' selected':'') + '>Awaiting Response</option>' +
+          '<option value="complete"' + (item.status==='complete'?' selected':'') + '>Complete</option>' +
+          '</select>' +
+          '<button onclick="removeAction(\'' + item.id + '\')" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary);">✕</button>' +
+          '</div>';
+      });
+      document.getElementById('actionsList').innerHTML = html;
+    }
+
+    function updateActionStatus(id, status) {
+      var items = getActions();
+      items.forEach(function(i){ if(i.id===id) i.status = status; });
+      saveActions(items);
+    }
+
+    function addActionItem() {
+      var title = document.getElementById('newActionTitle').value.trim();
+      if (!title) return;
+      var url = document.getElementById('newActionUrl').value.trim();
+      var items = getActions();
+      items.push({id:'a'+Date.now(), title:title, url:url, desc:'', status:'notstarted'});
+      saveActions(items);
+      document.getElementById('newActionTitle').value = '';
+      document.getElementById('newActionUrl').value = '';
+      renderActions();
+    }
+
+    function removeAction(id) {
+      var items = getActions().filter(function(i){ return i.id !== id; });
+      saveActions(items);
+      renderActions();
+    }
 
     function exportToExcel() {
       const statusLabelsMap = {maybe:'Interested',like:'Visited',love:'Ready',applied:'Applied',accepted:'Accepted',notinterested:'Not Interested'};
