@@ -801,6 +801,8 @@
     }
     function handlePhotoUpload(id, input) {
       if (!input.files || !input.files[0]) return;
+      const school = schools.find(s => s.id === id);
+      if (school && school.photos.length >= 3) { alert('Photo limit reached (3 per school).'); input.value=''; return; }
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -962,14 +964,15 @@
               </div>
             </div>
             <div class="notes-section">
-              <h4>📸 Photos (${s.photos.length})</h4>
+              <h4>📸 Photos (${s.photos.length}/3)</h4>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;">Limit 3 per school</div>
               <div class="photo-grid" id="photos-${s.id}">
                 ${s.photos.map((p, i) => `<div class="photo-thumb"><img src="${p.data}" alt="${p.caption||'Photo'}" onclick="viewPhoto('${s.id}',${i})"/><button class="photo-delete" onclick="event.stopPropagation();deletePhoto('${s.id}',${i})">&times;</button></div>`).join('')}
               </div>
-              <div class="add-note-row">
+              ${s.photos.length < 3 ? `<div class="add-note-row">
                 <button onclick="triggerPhotoUpload('${s.id}')" style="flex:1;">📁 Upload</button>
                 <button onclick="triggerCamera('${s.id}')" style="flex:1;">📷 Camera</button>
-              </div>
+              </div>` : '<div style="font-size:12px;color:var(--text-secondary);padding:6px 0;">Photo limit reached</div>'}
               <input type="file" id="photo-upload-${s.id}" accept="image/*" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
               <input type="file" id="photo-camera-${s.id}" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload('${s.id}',this)" />
             </div>
