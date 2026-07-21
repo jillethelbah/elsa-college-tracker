@@ -20,6 +20,8 @@
       --blue-light: #e8f0ff;
       --green: #e05555;
       --green-light: #fde8e8;
+      --black: #3a3a3a;
+      --black-light: #e8e8e8;
       --bg: #f0f0f8;
       --surface: #ffffff;
       --text: #2d2b3d;
@@ -175,6 +177,7 @@
     .college-card[data-interest="maybe"] { border-left-color: var(--orange); }
     .college-card[data-interest="applied"] { border-left-color: var(--blue); }
     .college-card[data-interest="accepted"] { border-left-color: var(--green); }
+    .college-card[data-interest="notinterested"] { border-left-color: var(--black); }
 
     .card-header {
       padding: 16px 20px;
@@ -195,6 +198,7 @@
     .interest-badge[data-interest="maybe"] { background: var(--orange-light); color: var(--orange); }
     .interest-badge[data-interest="applied"] { background: var(--blue-light); color: var(--blue); }
     .interest-badge[data-interest="accepted"] { background: var(--green-light); color: var(--green); }
+    .interest-badge[data-interest="notinterested"] { background: var(--black-light); color: var(--black); }
 
     .btn-icon {
       background: none; border: none; cursor: pointer;
@@ -413,6 +417,7 @@
         <button class="filter-chip" data-filter="love" onclick="filterSchools('love')">💜 Getting Ready to Apply</button>
         <button class="filter-chip" data-filter="applied" onclick="filterSchools('applied')">💙 Applied</button>
         <button class="filter-chip" data-filter="accepted" onclick="filterSchools('accepted')">❤️ Accepted</button>
+        <button class="filter-chip" data-filter="notinterested" onclick="filterSchools('notinterested')">🖤 Not Interested</button>
       </div>
       <div class="college-list" id="collegeList"></div>
     </div>
@@ -436,6 +441,7 @@
               <option value="maybe" selected>🧡 Interested</option>
               <option value="like">💚 Visited</option>
               <option value="love">💜 Ready</option>
+              <option value="notinterested">🖤 Not Interested</option>
             </select>
           </div>
           <div class="form-group">
@@ -713,7 +719,7 @@
       }
 
       // Sort: status order (Interested→Accepted), then alphabetical
-      const statusOrder = { maybe: 0, like: 1, love: 2, applied: 3, accepted: 4 };
+      const statusOrder = { maybe: 0, like: 1, love: 2, applied: 3, accepted: 4, notinterested: 5 };
       filtered.sort((a, b) => {
         const sa = statusOrder[a.interest] !== undefined ? statusOrder[a.interest] : 99;
         const sb = statusOrder[b.interest] !== undefined ? statusOrder[b.interest] : 99;
@@ -756,7 +762,7 @@
           if (h.action === 'photo') return `<div class="activity-item"><span class="activity-icon">📸</span><div class="activity-content">Added ${h.count} photo(s)<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'edit') return `<div class="activity-item"><span class="activity-icon">✏️</span><div class="activity-content">Changed ${h.field}: ${h.oldVal||'(empty)'} → ${h.newVal||'(empty)'}<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'status') {
-            const labels = {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted'};
+            const labels = {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted',notinterested:'🖤 Not Interested'};
             return `<div class="activity-item"><span class="activity-icon">🏷️</span><div class="activity-content">Status: ${labels[h.oldVal]||h.oldVal} → ${labels[h.newVal]||h.newVal}<div class="activity-date">${dateStr}</div></div></div>`;
           }
           return '';
@@ -774,7 +780,7 @@
             </div>
             <div class="card-actions">
               <span class="interest-badge" data-interest="${s.interest}">${
-                {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted'}[s.interest]
+                {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted',notinterested:'🖤 Not Interested'}[s.interest]
               }</span>
               <button class="btn-icon" onclick="event.stopPropagation();deleteSchool('${s.id}')" title="Remove">🗑️</button>
             </div>
@@ -800,6 +806,7 @@
                   <option value="love" ${s.interest==='love'?'selected':''}>💜 Ready</option>
                   <option value="applied" ${s.interest==='applied'?'selected':''}>💙 Applied</option>
                   <option value="accepted" ${s.interest==='accepted'?'selected':''}>❤️ Accepted</option>
+                  <option value="notinterested" ${s.interest==='notinterested'?'selected':''}>🖤 Not Interested</option>
                 </select>
               </div>
             </div>
@@ -1046,8 +1053,8 @@
       mapMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
       mapMarkers = [];
 
-      const statusColors = { maybe: '#e8913a', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#e05555' };
-      const statusLabels = { maybe: 'Interested', like: 'Visited', love: 'Ready', applied: 'Applied', accepted: 'Accepted' };
+      const statusColors = { maybe: '#e8913a', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#e05555', notinterested: '#3a3a3a' };
+      const statusLabels = { maybe: 'Interested', like: 'Visited', love: 'Ready', applied: 'Applied', accepted: 'Accepted', notinterested: 'Not Interested' };
 
       schools.forEach(function(s) {
         const coords = schoolCoords[s.name];
