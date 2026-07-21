@@ -621,11 +621,11 @@
       appId: "1:288336780032:web:f53e3316f9e0595bf531e5"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    var db = firebase.database();
 
-    let schools = [];
-    let currentFilter = 'all';
-    let searchQuery = '';
+    var schools = [];
+    var currentFilter = 'all';
+    var searchQuery = '';
 
     // Tab switching
     function switchTab(tab) {
@@ -1155,6 +1155,7 @@
     // Init (Firebase listener handles initial render)
     // renderSchools();
     // updateStats();
+  </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     // School coordinates lookup
