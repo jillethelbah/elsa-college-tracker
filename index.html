@@ -399,9 +399,9 @@
 
   <div class="stats-bar" id="statsBar">
     <div class="stat stat--total"><div class="stat__number" id="statTotal">0</div><div class="stat__label">Schools</div></div>
-    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Ready</div></div>
     <div class="stat stat--like"><div class="stat__number" id="statLike">0</div><div class="stat__label">💚 Visited</div></div>
-    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">🧡 Interested</div></div>
+    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Ready</div></div>
+    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">💙 Applied</div></div>
   </div>
 
   <div class="container">
@@ -923,9 +923,9 @@
     // Stats
     function updateStats() {
       document.getElementById('statTotal').textContent = schools.length;
-      document.getElementById('statLove').textContent = schools.filter(s => s.interest === 'love').length;
       document.getElementById('statLike').textContent = schools.filter(s => s.interest === 'like').length;
-      document.getElementById('statMaybe').textContent = schools.filter(s => s.interest === 'maybe').length;
+      document.getElementById('statLove').textContent = schools.filter(s => s.interest === 'love').length;
+      document.getElementById('statMaybe').textContent = schools.filter(s => s.interest === 'applied').length;
     }
 
     // Save
