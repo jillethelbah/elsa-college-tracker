@@ -337,6 +337,36 @@
     .activity-content { flex: 1; min-width: 0; }
     .activity-date { font-size: 11px; color: var(--text-secondary); }
 
+    /* Calendar */
+    .cal-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
+    .cal-nav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 18px; cursor: pointer; color: var(--text); font-weight: 700; }
+    .cal-nav-btn:hover { background: var(--purple-light); color: var(--purple); }
+    .cal-title { font-size: 18px; font-weight: 700; min-width: 180px; text-align: center; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-header { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; padding: 8px 0; }
+    .cal-cell {
+      min-height: 72px; background: var(--surface); border-radius: 8px;
+      padding: 4px 6px; font-size: 12px; border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .cal-cell.empty { background: transparent; border-color: transparent; }
+    .cal-cell.today { border-color: var(--purple); box-shadow: inset 0 0 0 1px var(--purple); }
+    .cal-cell .cal-num { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+    .cal-event {
+      font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #fff; font-weight: 600;
+    }
+    .cal-event.deadline { background: #e05555; }
+    .cal-event.visit { background: #4ea8b5; }
+    .cal-legend { display: flex; gap: 16px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-secondary); }
+    .cal-legend span { display: flex; align-items: center; gap: 4px; }
+    .cal-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    @media (max-width: 500px) {
+      .cal-cell { min-height: 56px; padding: 2px 3px; }
+      .cal-event { font-size: 9px; }
+    }
+
     /* Map */
     #mapContainer { width: 100%; height: 500px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
     .map-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color: var(--text-secondary); }
@@ -364,6 +394,7 @@
     <div class="tabs">
       <button class="tab active" data-tab="schools" onclick="switchTab('schools')">🎓 Schools</button>
       <button class="tab" data-tab="add" onclick="switchTab('add')">➕ Add New</button>
+      <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">📅 Calendar</button>
       <button class="tab" data-tab="map" onclick="switchTab('map')">🗺️ Map</button>
       <button class="tab" data-tab="journal" onclick="switchTab('journal')">📓 Journal</button>
     </div>
@@ -477,6 +508,24 @@
       </div>
     </div>
 
+    <!-- CALENDAR PANEL -->
+    <div class="panel" id="panel-calendar">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+        <span class="cal-title" id="calTitle"></span>
+        <button class="cal-nav-btn" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-day-header">Sun</div><div class="cal-day-header">Mon</div><div class="cal-day-header">Tue</div>
+        <div class="cal-day-header">Wed</div><div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div><div class="cal-day-header">Sat</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><span class="cal-dot" style="background:#e05555;"></span> Deadline</span>
+        <span><span class="cal-dot" style="background:#4ea8b5;"></span> Visit</span>
+      </div>
+    </div>
+
     <!-- JOURNAL PANEL -->
     <div class="panel" id="panel-journal">
       <div id="journalList"></div>
@@ -498,6 +547,7 @@
       document.getElementById(`panel-${tab}`).classList.add('active');
       if (tab === 'journal') renderJournal();
       if (tab === 'map') renderMap();
+      if (tab === 'calendar') renderCalendar();
     }
 
     // Search
@@ -828,6 +878,56 @@
         {id:"18",name:"Harvey Mudd",location:"Claremont, CA",interest:"maybe",tuition:"$73K",room:"$20K",size:"921",acceptance:"12–13%",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.hmc.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()}
       ];
       save();
+    }
+
+    // Calendar
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+
+    function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
+    function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); }
+
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calTitle').textContent = months[calMonth] + ' ' + calYear;
+
+      // Collect events by date key (YYYY-MM-DD)
+      const events = {};
+      schools.forEach(function(s) {
+        if (s.deadline) {
+          var d = s.deadline;
+          if (!events[d]) events[d] = [];
+          events[d].push({ name: s.name, type: 'deadline' });
+        }
+        if (s.visited) {
+          var v = s.visited;
+          if (!events[v]) events[v] = [];
+          events[v].push({ name: s.name, type: 'visit' });
+        }
+      });
+
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const today = new Date();
+      const todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+      let html = '';
+      // Empty cells before first day
+      for (var i = 0; i < firstDay; i++) {
+        html += '<div class="cal-cell empty"></div>';
+      }
+      for (var day = 1; day <= daysInMonth; day++) {
+        var key = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+        var isToday = key === todayKey;
+        var dayEvents = events[key] || [];
+        html += '<div class="cal-cell' + (isToday ? ' today' : '') + '">';
+        html += '<div class="cal-num">' + day + '</div>';
+        dayEvents.forEach(function(ev) {
+          html += '<div class="cal-event ' + ev.type + '" title="' + ev.name + ' — ' + ev.type + '">' + (ev.type === 'deadline' ? '📅 ' : '👀 ') + ev.name + '</div>';
+        });
+        html += '</div>';
+      }
+      document.getElementById('calGrid').innerHTML = html;
     }
 
     // Init
