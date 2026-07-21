@@ -974,6 +974,13 @@
       var data = snapshot.val();
       if (data) {
         schools = Array.isArray(data) ? data : Object.values(data);
+        // Firebase drops empty arrays — restore defaults
+        schools = schools.filter(function(s) { return s != null; }).map(function(s) {
+          if (!s.notes) s.notes = [];
+          if (!s.photos) s.photos = [];
+          if (!s.history) s.history = [];
+          return s;
+        });
       } else {
         // First time — seed Firebase with default data
         schools = defaultSchools;
