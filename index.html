@@ -85,11 +85,11 @@
       padding: 16px 24px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
-    .stat { text-align: center; }
+    .stat { text-align: center; min-width: 0; }
     .stat__number { font-size: 24px; font-weight: 800; }
-    .stat__label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat__label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
     .stat--total .stat__number { color: var(--purple); }
     .stat--love .stat__number { color: var(--pink); }
     .stat--like .stat__number { color: var(--teal); }
@@ -97,6 +97,12 @@
 
     /* Container */
     .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+
+    @media (max-width: 400px) {
+      .stats-bar { gap: 12px; padding: 12px 12px; }
+      .stat__number { font-size: 20px; }
+      .stat__label { font-size: 9px; letter-spacing: 0; }
+    }
 
     /* Tabs */
     .tabs {
