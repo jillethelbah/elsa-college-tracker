@@ -18,8 +18,8 @@
       --orange-light: #eee8ff;
       --blue: #5b8dd9;
       --blue-light: #e8f0ff;
-      --green: #4caf7a;
-      --green-light: #e6f7ee;
+      --green: #e05555;
+      --green-light: #fde8e8;
       --bg: #f0f0f8;
       --surface: #ffffff;
       --text: #2d2b3d;
@@ -426,7 +426,7 @@
         <button class="filter-chip" data-filter="like" onclick="filterSchools('like')">💚 Visited</button>
         <button class="filter-chip" data-filter="maybe" onclick="filterSchools('maybe')">🧡 Interested</button>
         <button class="filter-chip" data-filter="applied" onclick="filterSchools('applied')">💙 Applied</button>
-        <button class="filter-chip" data-filter="accepted" onclick="filterSchools('accepted')">💚 Accepted</button>
+        <button class="filter-chip" data-filter="accepted" onclick="filterSchools('accepted')">❤️ Accepted</button>
       </div>
       <div class="college-list" id="collegeList"></div>
     </div>
@@ -826,7 +826,7 @@
           if (h.action === 'photo') return `<div class="activity-item"><span class="activity-icon">📸</span><div class="activity-content">Added ${h.count} photo(s)<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'edit') return `<div class="activity-item"><span class="activity-icon">✏️</span><div class="activity-content">Changed ${h.field}: ${h.oldVal||'(empty)'} → ${h.newVal||'(empty)'}<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'status') {
-            const labels = {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'💚 Accepted'};
+            const labels = {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted'};
             return `<div class="activity-item"><span class="activity-icon">🏷️</span><div class="activity-content">Status: ${labels[h.oldVal]||h.oldVal} → ${labels[h.newVal]||h.newVal}<div class="activity-date">${dateStr}</div></div></div>`;
           }
           return '';
@@ -844,7 +844,7 @@
             </div>
             <div class="card-actions">
               <span class="interest-badge" data-interest="${s.interest}">${
-                {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'💚 Accepted'}[s.interest]
+                {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'❤️ Accepted'}[s.interest]
               }</span>
               <button class="btn-icon" onclick="event.stopPropagation();deleteSchool('${s.id}')" title="Remove">🗑️</button>
             </div>
@@ -869,7 +869,7 @@
                   <option value="like" ${s.interest==='like'?'selected':''}>💚 Visited</option>
                   <option value="love" ${s.interest==='love'?'selected':''}>💜 Ready</option>
                   <option value="applied" ${s.interest==='applied'?'selected':''}>💙 Applied</option>
-                  <option value="accepted" ${s.interest==='accepted'?'selected':''}>💚 Accepted</option>
+                  <option value="accepted" ${s.interest==='accepted'?'selected':''}>❤️ Accepted</option>
                 </select>
               </div>
             </div>
@@ -1002,7 +1002,7 @@
       mapMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
       mapMarkers = [];
 
-      const statusColors = { maybe: '#7b68ee', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#4caf7a' };
+      const statusColors = { maybe: '#7b68ee', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#e05555' };
       const statusLabels = { maybe: 'Interested', like: 'Visited', love: 'Ready', applied: 'Applied', accepted: 'Accepted' };
 
       schools.forEach(function(s) {
