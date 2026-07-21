@@ -393,6 +393,7 @@
     }
     .cal-event.deadline { background: #e05555; }
     .cal-event.visit { background: #4ea8b5; }
+    .cal-event.action { background: #e6b800; }
     .cal-legend { display: flex; gap: 16px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-secondary); }
     .cal-legend span { display: flex; align-items: center; gap: 4px; }
     .cal-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
@@ -539,11 +540,11 @@
     <!-- ACTIONS PANEL -->
     <div class="panel" id="panel-actions">
       <div class="action-section">
-        <h3>🎓 Scholarship Resources</h3>
         <div id="actionsList"></div>
         <div class="action-add-row">
-          <input type="text" id="newActionTitle" placeholder="Add link title..." />
-          <input type="text" id="newActionUrl" placeholder="URL (optional)" style="flex:0.7;" />
+          <input type="text" id="newActionTitle" placeholder="Add title..." />
+          <input type="text" id="newActionUrl" placeholder="URL (optional)" style="flex:0.6;" />
+          <input type="date" id="newActionDue" style="flex:0.5;" />
           <button onclick="addActionItem()">Add</button>
         </div>
       </div>
@@ -978,6 +979,18 @@
         }
       });
 
+      // Add action items with due dates
+      var actions = getActions();
+      actions.forEach(function(a) {
+        if (a.due && a.status !== 'complete') {
+          var dk = normalizeDate(a.due);
+          if (dk) {
+            if (!events[dk]) events[dk] = [];
+            events[dk].push({ name: a.title, type: 'action', id: a.id });
+          }
+        }
+      });
+
       var firstDay = new Date(calYear, calMonth, 1).getDay();
       var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
       var today = new Date();
@@ -994,6 +1007,7 @@
         // Group by type
         var deadlines = dayEvents.filter(function(e){ return e.type === 'deadline'; });
         var visits = dayEvents.filter(function(e){ return e.type === 'visit'; });
+        var actionItems = dayEvents.filter(function(e){ return e.type === 'action'; });
 
         html += '<div class="cal-cell' + (isToday ? ' today' : '') + '">';
         html += '<div class="cal-num">' + day + '</div>';
@@ -1010,6 +1024,13 @@
         } else if (visits.length > 1) {
           var vnames = visits.map(function(e){ return e.name; }).join(', ');
           html += '<div class="cal-event visit" onclick="showDayEvents(event,\'' + key + '\',\'visit\')" title="' + vnames + '">' + visits.length + ' visits</div>';
+        }
+
+        if (actionItems.length === 1) {
+          html += '<div class="cal-event action" onclick="switchTab(\'actions\')" title="' + actionItems[0].name + '">⚡ ' + actionItems[0].name + '</div>';
+        } else if (actionItems.length > 1) {
+          var anames = actionItems.map(function(e){ return e.name; }).join(', ');
+          html += '<div class="cal-event action" onclick="switchTab(\'actions\')" title="' + anames + '">⚡ ' + actionItems.length + ' actions</div>';
         }
 
         html += '</div>';
@@ -1088,16 +1109,16 @@
 
     // === ACTIONS / KEY LINKS ===
     const defaultActions = [
-      {id:'a1',title:'Bold.org',url:'https://bold.org',desc:'Massive database of scholarships; no‑essay, merit, athletic, and identity‑based awards.',status:'notstarted'},
-      {id:'a2',title:'AdmissionSight Scholarship Directory',url:'https://admissionsight.com/scholarships',desc:'Curated list of 100 top scholarships for high school students.',status:'notstarted'},
-      {id:'a3',title:'Scholarships.com',url:'https://www.scholarships.com',desc:'Large national database; filters by grade level, identity, and major.',status:'notstarted'},
-      {id:'a4',title:'The College Monk',url:'https://www.thecollegemonk.com/scholarships',desc:'Verified list of senior‑year scholarships with timelines and strategies.',status:'notstarted'},
-      {id:'a5',title:'CollegeWhale',url:'https://collegewhale.com/scholarships/high-school',desc:'300+ verified scholarships for high school students.',status:'notstarted'},
-      {id:'a6',title:'College Board BigFuture',url:'https://bigfuture.collegeboard.org/scholarships',desc:'National database plus automatic scholarships tied to college planning.',status:'notstarted'},
-      {id:'a7',title:'Scholarship America',url:'https://scholarshipamerica.org/students/',desc:'Hosts major national scholarships and corporate awards.',status:'notstarted'},
-      {id:'a8',title:'Fastweb',url:'https://www.fastweb.com',desc:'One of the largest scholarship search engines; personalized matching.',status:'notstarted'},
-      {id:'a9',title:'Going Merry',url:'https://www.goingmerry.com',desc:'Apply to multiple scholarships with one profile.',status:'notstarted'},
-      {id:'a10',title:'Niche Scholarships',url:'https://www.niche.com/colleges/scholarships/',desc:'Merit, athletic, and interest‑based scholarships.',status:'notstarted'}
+      {id:'a1',title:'Bold.org',url:'https://bold.org',desc:'Massive database of scholarships; no‑essay, merit, athletic, and identity‑based awards.',status:'notstarted',due:''},
+      {id:'a2',title:'AdmissionSight Scholarship Directory',url:'https://admissionsight.com/scholarships',desc:'Curated list of 100 top scholarships for high school students.',status:'notstarted',due:''},
+      {id:'a3',title:'Scholarships.com',url:'https://www.scholarships.com',desc:'Large national database; filters by grade level, identity, and major.',status:'notstarted',due:''},
+      {id:'a4',title:'The College Monk',url:'https://www.thecollegemonk.com/scholarships',desc:'Verified list of senior‑year scholarships with timelines and strategies.',status:'notstarted',due:''},
+      {id:'a5',title:'CollegeWhale',url:'https://collegewhale.com/scholarships/high-school',desc:'300+ verified scholarships for high school students.',status:'notstarted',due:''},
+      {id:'a6',title:'College Board BigFuture',url:'https://bigfuture.collegeboard.org/scholarships',desc:'National database plus automatic scholarships tied to college planning.',status:'notstarted',due:''},
+      {id:'a7',title:'Scholarship America',url:'https://scholarshipamerica.org/students/',desc:'Hosts major national scholarships and corporate awards.',status:'notstarted',due:''},
+      {id:'a8',title:'Fastweb',url:'https://www.fastweb.com',desc:'One of the largest scholarship search engines; personalized matching.',status:'notstarted',due:''},
+      {id:'a9',title:'Going Merry',url:'https://www.goingmerry.com',desc:'Apply to multiple scholarships with one profile.',status:'notstarted',due:''},
+      {id:'a10',title:'Niche Scholarships',url:'https://www.niche.com/colleges/scholarships/',desc:'Merit, athletic, and interest‑based scholarships.',status:'notstarted',due:''}
     ];
 
     function getActions() {
@@ -1113,8 +1134,10 @@
       var html = '';
       items.forEach(function(item) {
         var linkHtml = item.url ? '<a href="' + item.url + '" target="_blank">' + item.title + '</a>' : '<strong>' + item.title + '</strong>';
+        var dueHtml = '<input type="date" value="' + (item.due||'') + '" onchange="updateActionDue(\'' + item.id + '\',this.value)" style="padding:4px 6px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:var(--font);" />';
         html += '<div class="action-item">' +
           '<div style="flex:1;">' + linkHtml + '<div class="action-desc">' + (item.desc || '') + '</div></div>' +
+          dueHtml +
           '<select onchange="updateActionStatus(\'' + item.id + '\',this.value)">' +
           '<option value="notstarted"' + (item.status==='notstarted'?' selected':'') + '>To be started</option>' +
           '<option value="inprogress"' + (item.status==='inprogress'?' selected':'') + '>In Progress</option>' +
@@ -1133,15 +1156,23 @@
       saveActions(items);
     }
 
+    function updateActionDue(id, due) {
+      var items = getActions();
+      items.forEach(function(i){ if(i.id===id) i.due = due; });
+      saveActions(items);
+    }
+
     function addActionItem() {
       var title = document.getElementById('newActionTitle').value.trim();
       if (!title) return;
       var url = document.getElementById('newActionUrl').value.trim();
+      var due = document.getElementById('newActionDue').value || '';
       var items = getActions();
-      items.push({id:'a'+Date.now(), title:title, url:url, desc:'', status:'notstarted'});
+      items.push({id:'a'+Date.now(), title:title, url:url, desc:'', status:'notstarted', due:due});
       saveActions(items);
       document.getElementById('newActionTitle').value = '';
       document.getElementById('newActionUrl').value = '';
+      document.getElementById('newActionDue').value = '';
       renderActions();
     }
 
