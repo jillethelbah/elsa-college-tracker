@@ -544,7 +544,7 @@
   </div>
 
   <script>
-    let schools = JSON.parse(localStorage.getItem('elsaColleges') || '[]');
+    let schools = JSON.parse(localStorage.getItem('elsaColleges2') || '[]');
     let currentFilter = 'all';
     let searchQuery = '';
     let pendingPhotos = [];
@@ -929,10 +929,10 @@
     }
 
     // Save
-    function save() { localStorage.setItem('elsaColleges', JSON.stringify(schools)); }
+    function save() { localStorage.setItem('elsaColleges2', JSON.stringify(schools)); }
 
     // Pre-populate with spreadsheet data on first load
-    if (!localStorage.getItem('elsaColleges')) {
+    if (!localStorage.getItem('elsaColleges2')) {
       schools = [
         {id:"1",name:"San Jose State University",location:"San Jose, CA",interest:"maybe",tuition:"$12K WUE",room:"$19K",size:"27,111",acceptance:"96%",division:"DI (Mountain West)",swim:"DI Mountain West women's swim & dive",coach:"sage.hopkins@sjsu.edu",url:"https://www.sjsu.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"2",name:"University of Washington Seattle",location:"Seattle, WA",interest:"maybe",tuition:"$13K (in-state)",room:"$18.9K",size:"45,097",acceptance:"39%",division:"DI (Big Ten)",swim:"No active NCAA swim team",coach:"",url:"https://www.washington.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
