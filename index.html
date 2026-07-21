@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>College Tracker 🎓</title>
+  <title>Elsa's College Tracker 🎓</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
@@ -14,8 +14,8 @@
       --pink-light: #f3e8ff;
       --teal: #4ea8b5;
       --teal-light: #e0f5f8;
-      --orange: #7b68ee;
-      --orange-light: #eee8ff;
+      --orange: #e8913a;
+      --orange-light: #fef3e6;
       --blue: #5b8dd9;
       --blue-light: #e8f0ff;
       --green: #e05555;
@@ -93,7 +93,7 @@
     .stat--total .stat__number { color: var(--purple); }
     .stat--love .stat__number { color: var(--pink); }
     .stat--like .stat__number { color: var(--teal); }
-    .stat--maybe .stat__number { color: var(--orange); }
+    .stat--maybe .stat__number { color: var(--blue); }
 
     /* Container */
     .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
@@ -235,35 +235,6 @@
       font-family: var(--font); font-size: 13px;
     }
 
-    /* Photos */
-    .photos-section { margin-top: 12px; }
-    .photos-section h4 { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-    .photos-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 8px; margin-bottom: 8px;
-    }
-    .photo-thumb {
-      aspect-ratio: 1; border-radius: 8px; overflow: hidden;
-      position: relative; cursor: pointer;
-    }
-    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .photo-thumb .photo-delete {
-      position: absolute; top: 2px; right: 2px;
-      background: rgba(0,0,0,0.6); color: #fff;
-      border: none; border-radius: 50%;
-      width: 20px; height: 20px; font-size: 12px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-    .upload-btn {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 8px 16px; background: var(--purple-light); color: var(--purple);
-      border: 2px dashed var(--purple); border-radius: 10px;
-      font-weight: 600; cursor: pointer; font-size: 13px;
-      font-family: var(--font); transition: all 0.15s;
-    }
-    .upload-btn:hover { background: var(--purple); color: #fff; }
-    .upload-btn input { display: none; }
-
     /* Journal Panel */
     .journal-entry {
       background: var(--surface);
@@ -275,8 +246,6 @@
     .journal-entry .je-date { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; }
     .journal-entry .je-school { font-size: 14px; font-weight: 700; color: var(--purple); margin-bottom: 4px; }
     .journal-entry .je-text { font-size: 14px; line-height: 1.6; }
-    .journal-entry .je-photos { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-    .journal-entry .je-photos img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
 
     /* Empty state */
     .empty-state {
@@ -374,26 +343,12 @@
     .map-legend span { display: flex; align-items: center; gap: 4px; }
     .map-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-    /* Lightbox */
-    .lightbox {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.85); z-index: 1000;
-      justify-content: center; align-items: center;
-    }
-    .lightbox.open { display: flex; }
-    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
-    .lightbox-close {
-      position: absolute; top: 16px; right: 16px;
-      background: #fff; border: none; border-radius: 50%;
-      width: 36px; height: 36px; font-size: 20px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
   </style>
 </head>
 <body>
 
   <header class="header">
-    <h1>College Tracker 🎓</h1>
+    <h1>Elsa's College Tracker 🎓</h1>
     <p>Building Tomorrow, One Application at a Time ✨</p>
   </header>
 
@@ -502,16 +457,8 @@
             <input type="url" id="schoolUrl" placeholder="https://www.school.edu" />
           </div>
           <div class="form-group">
-            <label>Date Visited</label>
+            <label>Visit Date</label>
             <input type="date" id="schoolVisited" />
-          </div>
-          <div class="form-group full">
-            <label>📸 Upload Campus Photos</label>
-            <label class="upload-btn">
-              <span>📷 Choose Photos</span>
-              <input type="file" id="schoolPhotos" accept="image/*" multiple capture="environment" />
-            </label>
-            <div id="photoPreview" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;"></div>
           </div>
         </div>
         <button class="btn-add" onclick="addSchool()">🎓 Add This School!</button>
@@ -522,7 +469,7 @@
     <div class="panel" id="panel-map">
       <div id="mapContainer"></div>
       <div class="map-legend">
-        <span><span class="map-dot" style="background:#7b68ee;"></span> Interested</span>
+        <span><span class="map-dot" style="background:#e8913a;"></span> Interested</span>
         <span><span class="map-dot" style="background:#4ea8b5;"></span> Visited</span>
         <span><span class="map-dot" style="background:#a855c6;"></span> Ready</span>
         <span><span class="map-dot" style="background:#6b8db5;"></span> Applied</span>
@@ -537,17 +484,11 @@
 
   </div>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-    <img id="lightboxImg" src="" alt="Full size photo" />
-  </div>
 
   <script>
     let schools = JSON.parse(localStorage.getItem('elsaColleges2') || '[]');
     let currentFilter = 'all';
     let searchQuery = '';
-    let pendingPhotos = [];
 
     // Tab switching
     function switchTab(tab) {
@@ -580,24 +521,6 @@
       renderSchools();
     }
 
-    // Photo upload preview for add form
-    document.getElementById('schoolPhotos').addEventListener('change', function(e) {
-      const preview = document.getElementById('photoPreview');
-      pendingPhotos = [];
-      preview.innerHTML = '';
-      Array.from(e.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          pendingPhotos.push(ev.target.result);
-          const img = document.createElement('img');
-          img.src = ev.target.result;
-          img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:8px;';
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
     // Add school
     function addSchool() {
       const name = document.getElementById('schoolName').value.trim();
@@ -620,7 +543,7 @@
         coach: document.getElementById('schoolCoach').value.trim(),
         url: document.getElementById('schoolUrl').value.trim(),
         visited: document.getElementById('schoolVisited').value.trim(),
-        photos: pendingPhotos.slice(),
+        photos: [],
         notes: [],
         addedDate: new Date().toISOString()
       };
@@ -634,9 +557,6 @@
       ['schoolName','schoolLocation','schoolDeadline','schoolMajor','schoolWhy','schoolTuition','schoolRoom','schoolDivision','schoolAcceptance','schoolSwim','schoolCoach','schoolUrl','schoolVisited'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('schoolInterest').value = 'maybe';
       document.getElementById('schoolSize').value = '';
-      document.getElementById('schoolPhotos').value = '';
-      document.getElementById('photoPreview').innerHTML = '';
-      pendingPhotos = [];
 
       switchTab('schools');
     }
@@ -677,7 +597,7 @@
         // Log the change to activity history
         if (!school.history) school.history = [];
         if (oldVal !== school[field]) {
-          const fieldLabels = {tuition:'Tuition',room:'Room & Board',acceptance:'Acceptance Rate',size:'Undergrads',swim:'Swim Program',deadline:'Deadline',coach:'Swim Coach',url:'Website',visited:'Date Visited',major:'Majors Considering',division:'Division',location:'Location',name:'School Name',why:'Notes'};
+          const fieldLabels = {tuition:'Tuition',room:'Room & Board',acceptance:'Acceptance Rate',size:'Undergrads',swim:'Swim Program',deadline:'Deadline',coach:'Swim Coach',url:'Website',visited:'Visit Date',major:'Majors Considering',division:'Division',location:'Location',name:'School Name',why:'Notes'};
           school.history.push({
             action: 'edit',
             field: fieldLabels[field] || field,
@@ -728,49 +648,6 @@
       save(); renderSchools();
     }
 
-    // Add photo to existing school
-    function addPhotoToSchool(id) {
-      const input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*';
-      input.multiple = true; input.capture = 'environment';
-      input.onchange = function(e) {
-        const school = schools.find(s => s.id === id);
-        if (!school.history) school.history = [];
-        let count = 0;
-        Array.from(e.target.files).forEach(file => {
-          const reader = new FileReader();
-          reader.onload = function(ev) {
-            school.photos.push(ev.target.result);
-            count++;
-            if (count === e.target.files.length) {
-              school.history.push({ action: 'photo', count, date: new Date().toISOString() });
-              save(); renderSchools();
-              const det = document.querySelector(`#details-${id}`);
-              if (det) det.classList.add('open');
-            }
-          };
-          reader.readAsDataURL(file);
-        });
-      };
-      input.click();
-    }
-
-    // Delete photo
-    function deletePhoto(schoolId, photoIndex) {
-      const school = schools.find(s => s.id === schoolId);
-      school.photos.splice(photoIndex, 1);
-      save(); renderSchools();
-    }
-
-    // Lightbox
-    function openLightbox(src) {
-      document.getElementById('lightboxImg').src = src;
-      document.getElementById('lightbox').classList.add('open');
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('open');
-    }
-
     // Render
     function renderSchools() {
       const list = document.getElementById('collegeList');
@@ -812,12 +689,6 @@
             <button class="note-delete" onclick="event.stopPropagation();deleteNote('${s.id}',${i})">&times;</button>
           </div>`).join('');
 
-        const photosHtml = s.photos.map((p, i) => `
-          <div class="photo-thumb" onclick="event.stopPropagation();openLightbox('${p.replace(/'/g,"\\'")}')">
-            <img src="${p}" alt="Campus photo" loading="lazy" />
-            <button class="photo-delete" onclick="event.stopPropagation();deletePhoto('${s.id}',${i})">&times;</button>
-          </div>`).join('');
-
         // Build activity history
         const history = (s.history || []).slice().reverse().slice(0, 10);
         const historyHtml = history.length > 0 ? history.map(h => {
@@ -830,7 +701,7 @@
             return `<div class="activity-item"><span class="activity-icon">🏷️</span><div class="activity-content">Status: ${labels[h.oldVal]||h.oldVal} → ${labels[h.newVal]||h.newVal}<div class="activity-date">${dateStr}</div></div></div>`;
           }
           return '';
-        }).join('') : '<div style="font-size:12px;color:#aaa;padding:4px 0;">No activity yet — edit fields, add notes or photos to see history here.</div>';
+        }).join('') : '<div style="font-size:12px;color:#aaa;padding:4px 0;">No activity yet — edit fields or add notes to see history here.</div>';
 
         const coachDisplay = s.coach ? `<a href="mailto:${s.coach}" onclick="event.stopPropagation()">${s.coach}</a>` : '';
         const urlDisplay = s.url ? `<a href="${s.url}" target="_blank" onclick="event.stopPropagation()">${s.url.replace('https://','')}</a>` : '';
@@ -840,7 +711,7 @@
           <div class="card-header" onclick="toggleCard('${s.id}')">
             <div>
               <h3>${s.name}</h3>
-              <div class="location">📍 ${s.location || 'Location TBD'}${s.division ? ' · ' + s.division : ''}${s.notes.length ? ' · 📝' + s.notes.length : ''}${s.photos.length ? ' · 📸' + s.photos.length : ''}</div>
+              <div class="location">📍 ${s.location || 'Location TBD'}${s.division ? ' · ' + s.division : ''}${s.notes.length ? ' · 📝' + s.notes.length : ''}</div>
             </div>
             <div class="card-actions">
               <span class="interest-badge" data-interest="${s.interest}">${
@@ -859,7 +730,7 @@
               <div class="detail-item"><label>📅 Deadline</label>${ef(s.id,'deadline',s.deadline,deadlineStr)}</div>
               <div class="detail-item"><label>👩‍🏫 Swim Coach</label>${ef(s.id,'coach',s.coach,coachDisplay)}</div>
               <div class="detail-item"><label>🌐 Website</label>${ef(s.id,'url',s.url,urlDisplay)}</div>
-              <div class="detail-item"><label>👀 Date Visited</label>${ef(s.id,'visited',s.visited,visitedStr)}</div>
+              <div class="detail-item"><label>👀 Visit Date</label>${ef(s.id,'visited',s.visited,visitedStr)}</div>
               <div class="detail-item"><label>📖 Majors Considering</label>${ef(s.id,'major',s.major)}</div>
               <div class="detail-item"><label>🏅 NCAA Division</label>${ef(s.id,'division',s.division)}</div>
               <div class="detail-item">
@@ -882,11 +753,6 @@
                 <button onclick="addNote('${s.id}')">Add</button>
               </div>
             </div>
-            <div class="photos-section">
-              <h4>📸 Photos (${s.photos.length})</h4>
-              <div class="photos-grid">${photosHtml}</div>
-              <button class="upload-btn" onclick="event.stopPropagation();addPhotoToSchool('${s.id}')">📷 Add Photos</button>
-            </div>
             <div class="activity-section">
               <h4>📋 Activity History</h4>
               ${historyHtml}
@@ -902,12 +768,11 @@
       const entries = [];
       schools.forEach(s => {
         s.notes.forEach(n => entries.push({ school: s.name, text: n.text, date: n.date, interest: s.interest }));
-        if (s.photos.length > 0) entries.push({ school: s.name, text: `Added ${s.photos.length} photo(s)`, date: s.addedDate, interest: s.interest, photos: s.photos.slice(0,4) });
       });
       entries.sort((a,b) => new Date(b.date) - new Date(a.date));
 
       if (entries.length === 0) {
-        list.innerHTML = `<div class="empty-state"><div class="emoji">📓</div><h3>No journal entries yet</h3><p>Add notes and photos to schools to see them here!</p></div>`;
+        list.innerHTML = `<div class="empty-state"><div class="emoji">📓</div><h3>No journal entries yet</h3><p>Add notes to schools to see them here!</p></div>`;
         return;
       }
 
@@ -916,7 +781,7 @@
           <div class="je-date">${new Date(e.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
           <div class="je-school">${e.school}</div>
           <div class="je-text">${e.text}</div>
-          ${e.photos ? `<div class="je-photos">${e.photos.map(p => `<img src="${p}" alt="Photo" onclick="openLightbox('${p.replace(/'/g,"\\'")}')" />`).join('')}</div>` : ''}
+
         </div>`).join('');
     }
 
@@ -1002,7 +867,7 @@
       mapMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
       mapMarkers = [];
 
-      const statusColors = { maybe: '#7b68ee', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#e05555' };
+      const statusColors = { maybe: '#e8913a', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#e05555' };
       const statusLabels = { maybe: 'Interested', like: 'Visited', love: 'Ready', applied: 'Applied', accepted: 'Accepted' };
 
       schools.forEach(function(s) {
