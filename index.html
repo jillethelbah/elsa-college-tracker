@@ -608,7 +608,20 @@
 
 
   <script>
-    let schools = JSON.parse(localStorage.getItem('elsaColleges4') || '[]');
+    // Firebase setup
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6svR19LtjwB4TPiI8UtdWJwqegBoxPDw",
+      authDomain: "elsa-college-tracker.firebaseapp.com",
+      databaseURL: "https://elsa-college-tracker-default-rtdb.firebaseio.com",
+      projectId: "elsa-college-tracker",
+      storageBucket: "elsa-college-tracker.firebasestorage.app",
+      messagingSenderId: "288336780032",
+      appId: "1:288336780032:web:f53e3316f9e0595bf531e5"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let schools = [];
     let currentFilter = 'all';
     let searchQuery = '';
 
@@ -927,33 +940,46 @@
       document.getElementById('statMaybe').textContent = schools.filter(s => s.interest === 'applied').length;
     }
 
-    // Save
-    function save() { localStorage.setItem('elsaColleges4', JSON.stringify(schools)); }
+    // Save to Firebase
+    function save() {
+      db.ref('schools').set(schools);
+    }
 
-    // Pre-populate with spreadsheet data on first load
-    if (!localStorage.getItem('elsaColleges4')) {
-      schools = [
+    // Default schools data
+    const defaultSchools = [
         {id:"1",name:"San Jose State University",location:"San Jose, CA",interest:"maybe",tuition:"$12K WUE",room:"$19K",size:"27,111",acceptance:"96%",division:"DI (Mountain West)",swim:"DI Mountain West women's swim & dive",coach:"sage.hopkins@sjsu.edu",url:"https://www.sjsu.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"2",name:"University of Washington Seattle",location:"Seattle, WA",interest:"maybe",tuition:"$13K (in-state)",room:"$18.9K",size:"45,097",acceptance:"39%",division:"DI (Big Ten)",swim:"No active NCAA swim team",coach:"",url:"https://www.washington.edu",visited:"2026-08-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"3",name:"University of Utah",location:"Salt Lake City, UT",interest:"maybe",tuition:"$18K WUE",room:"$14K",size:"26,041",acceptance:"87%",division:"DI (Big 12)",swim:"Power-conference DI swim & dive; R1",coach:"",url:"https://www.utah.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"4",name:"Northern Arizona University",location:"Flagstaff, AZ",interest:"maybe",tuition:"$20K",room:"$11.7K",size:"22,991",acceptance:"90%",division:"DI",swim:"Strong conference contender",coach:"Andy.Johns@nau.edu",url:"https://www.nau.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
         {id:"5",name:"University of Arizona",location:"Tucson, AZ",interest:"maybe",tuition:"$21K WUE",room:"$15K",size:"45,025",acceptance:"86%",division:"DI (Big 12)",swim:"Power-conference DI swim & dive; NCAA level program",coach:"",url:"https://www.arizona.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"6",name:"University of Nevada Reno",location:"Reno, NV",interest:"maybe",tuition:"$26K",room:"$12K",size:"19,122",acceptance:"74–85%",division:"DI",swim:"Competitive DI",coach:"thmcraw@ucsc.edu",url:"https://www.unr.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"7",name:"UC Santa Cruz",location:"Santa Cruz, CA",interest:"maybe",tuition:"$31K",room:"$22K",size:"16,728",acceptance:"63–65%",division:"DIII",swim:"NCAA DIII women's swim & dive program",coach:"hgarlich@ucsc.edu",url:"https://www.ucsc.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"8",name:"Arizona State University",location:"Tempe, AZ",interest:"maybe",tuition:"$33K",room:"$16K",size:"65,450",acceptance:"89–90%",division:"DI",swim:"Nationally strong DI",coach:"Herbert.Behm@asu.edu",url:"https://www.asu.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"9",name:"UC Santa Barbara",location:"Santa Barbara, CA",interest:"maybe",tuition:"$43K",room:"$15.4K",size:"23,181",acceptance:"28–35%",division:"DIII",swim:"Mid-pack DI, competitive",coach:"jaclyn.rosen@athletics.ucsb.edu",url:"https://www.ucsb.edu",        visited:"2026-07-23",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"10",name:"UC San Diego",location:"La Jolla, CA",interest:"maybe",tuition:"$46K",room:"$13.4K",size:"34,955",acceptance:"14–29%",division:"DIII",swim:"Strong Big West program",coach:"marco@ucsd.edu",url:"https://www.ucsd.edu",visited:"2026-07-24",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"11",name:"Pomona College",location:"Claremont, CA",interest:"maybe",tuition:"$62K",room:"$33K",size:"1,766",acceptance:"7%",division:"DIII (Pomona-Pitzer)",swim:"Elite DIII program",coach:"Jean-Paul.Gowdy@pomona.edu",url:"https://www.pomona.edu",visited:"2026-07-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"12",name:"Scripps College",location:"Claremont, CA",interest:"maybe",tuition:"$63K",room:"$21K",size:"1,117",acceptance:"",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.scrippscollege.edu",visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"13",name:"Occidental College",location:"Los Angeles, CA",interest:"maybe",tuition:"$63K",room:"$17K",size:"1,881",acceptance:"40%",division:"DIII",swim:"Strong SCIAC program",coach:"hmeryl@oxy.edu",url:"https://www.oxy.edu",visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"14",name:"Claremont McKenna",location:"Claremont, CA",interest:"maybe",tuition:"$64K",room:"$18K",size:"1,390",acceptance:"9–11%",division:"DIII (Pomona-Pitzer)",swim:"Top-tier DIII nationally",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.cmc.edu",visited:"2026-07-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"15",name:"Pitzer College",location:"Claremont, CA",interest:"maybe",tuition:"$65K",room:"$20K",size:"1,227",acceptance:"25–28%",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"Jean-Paul.Gowdy@pomona.edu",url:"https://www.pitzer.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"16",name:"Chapman University",location:"Orange, CA",interest:"maybe",tuition:"$67K",room:"$16K",size:"7,713",acceptance:"55–65%",division:"DIII",swim:"Strong SCIAC competitor",coach:"swimdive@chapman.edu",url:"https://www.chapman.edu",        visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
-                {id:"17",name:"Pepperdine University",location:"Malibu, CA",interest:"maybe",tuition:"$68K",room:"$21K",size:"3,708",acceptance:"53%",division:"PCSC",swim:"",coach:"ellie.monobe@pepperdine.edu",url:"https://www.pepperdine.edu",visited:"2026-07-23",deadline:"",major:"",why:"Dan Marella is head Swim and Dive coach",photos:[],notes:[],addedDate:new Date().toISOString()},
-        {id:"18",name:"Harvey Mudd",location:"Claremont, CA",interest:"maybe",tuition:"$73K",room:"$20K",size:"921",acceptance:"12–13%",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.hmc.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()}
-      ];
-      save();
-    }
+        {id:"6",name:"University of Nevada Reno",location:"Reno, NV",interest:"maybe",tuition:"$26K",room:"$12K",size:"19,122",acceptance:"74-85%",division:"DI",swim:"Competitive DI",coach:"thmcraw@ucsc.edu",url:"https://www.unr.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"7",name:"UC Santa Cruz",location:"Santa Cruz, CA",interest:"maybe",tuition:"$31K",room:"$22K",size:"16,728",acceptance:"63-65%",division:"DIII",swim:"NCAA DIII women's swim & dive program",coach:"hgarlich@ucsc.edu",url:"https://www.ucsc.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"8",name:"Arizona State University",location:"Tempe, AZ",interest:"maybe",tuition:"$33K",room:"$16K",size:"65,450",acceptance:"89-90%",division:"DI",swim:"Nationally strong DI",coach:"Herbert.Behm@asu.edu",url:"https://www.asu.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"9",name:"UC Santa Barbara",location:"Santa Barbara, CA",interest:"maybe",tuition:"$43K",room:"$15.4K",size:"23,181",acceptance:"28-35%",division:"DIII",swim:"Mid-pack DI, competitive",coach:"jaclyn.rosen@athletics.ucsb.edu",url:"https://www.ucsb.edu",visited:"2026-07-23",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"10",name:"UC San Diego",location:"La Jolla, CA",interest:"maybe",tuition:"$46K",room:"$13.4K",size:"34,955",acceptance:"14-29%",division:"DIII",swim:"Strong Big West program",coach:"marco@ucsd.edu",url:"https://www.ucsd.edu",visited:"2026-07-24",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"11",name:"Pomona College",location:"Claremont, CA",interest:"maybe",tuition:"$62K",room:"$33K",size:"1,766",acceptance:"7%",division:"DIII (Pomona-Pitzer)",swim:"Elite DIII program",coach:"Jean-Paul.Gowdy@pomona.edu",url:"https://www.pomona.edu",visited:"2026-07-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"12",name:"Scripps College",location:"Claremont, CA",interest:"maybe",tuition:"$63K",room:"$21K",size:"1,117",acceptance:"",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.scrippscollege.edu",visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"13",name:"Occidental College",location:"Los Angeles, CA",interest:"maybe",tuition:"$63K",room:"$17K",size:"1,881",acceptance:"40%",division:"DIII",swim:"Strong SCIAC program",coach:"hmeryl@oxy.edu",url:"https://www.oxy.edu",visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"14",name:"Claremont McKenna",location:"Claremont, CA",interest:"maybe",tuition:"$64K",room:"$18K",size:"1,390",acceptance:"9-11%",division:"DIII (Pomona-Pitzer)",swim:"Top-tier DIII nationally",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.cmc.edu",visited:"2026-07-21",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"15",name:"Pitzer College",location:"Claremont, CA",interest:"maybe",tuition:"$65K",room:"$20K",size:"1,227",acceptance:"25-28%",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"Jean-Paul.Gowdy@pomona.edu",url:"https://www.pitzer.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"16",name:"Chapman University",location:"Orange, CA",interest:"maybe",tuition:"$67K",room:"$16K",size:"7,713",acceptance:"55-65%",division:"DIII",swim:"Strong SCIAC competitor",coach:"swimdive@chapman.edu",url:"https://www.chapman.edu",visited:"2026-07-22",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"17",name:"Pepperdine University",location:"Malibu, CA",interest:"maybe",tuition:"$68K",room:"$21K",size:"3,708",acceptance:"53%",division:"PCSC",swim:"",coach:"ellie.monobe@pepperdine.edu",url:"https://www.pepperdine.edu",visited:"2026-07-23",deadline:"",major:"",why:"Dan Marella is head Swim and Dive coach",photos:[],notes:[],addedDate:new Date().toISOString()},
+        {id:"18",name:"Harvey Mudd",location:"Claremont, CA",interest:"maybe",tuition:"$73K",room:"$20K",size:"921",acceptance:"12-13%",division:"DIII (Pomona-Pitzer)",swim:"Same elite DIII program",coach:"charles.griffiths@cms.claremont.edu",url:"https://www.hmc.edu",visited:"",deadline:"",major:"",why:"",photos:[],notes:[],addedDate:new Date().toISOString()}
+    ];
+
+    // Listen for real-time updates from Firebase
+    db.ref('schools').on('value', function(snapshot) {
+      var data = snapshot.val();
+      if (data) {
+        schools = Array.isArray(data) ? data : Object.values(data);
+      } else {
+        // First time — seed Firebase with default data
+        schools = defaultSchools;
+        db.ref('schools').set(schools);
+      }
+      renderSchools();
+      updateStats();
+    });
 
     // Calendar
     let calYear = new Date().getFullYear();
@@ -1095,11 +1121,13 @@
       document.body.appendChild(popup);
     }
 
-    // Init
-    renderSchools();
-    updateStats();
+    // Init (Firebase listener handles initial render)
+    // renderSchools();
+    // updateStats();
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script>
     // School coordinates lookup
     const schoolCoords = {
@@ -1141,12 +1169,27 @@
     ];
 
     function getActions() {
-      var stored = localStorage.getItem('elsaActions');
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem('elsaActions', JSON.stringify(defaultActions));
-      return defaultActions;
+      // Returns current cached actions (Firebase listener keeps this updated)
+      return window._cachedActions || defaultActions;
     }
-    function saveActions(items) { localStorage.setItem('elsaActions', JSON.stringify(items)); }
+    function saveActions(items) {
+      window._cachedActions = items;
+      db.ref('actions').set(items);
+    }
+
+    // Listen for real-time action updates
+    db.ref('actions').on('value', function(snapshot) {
+      var data = snapshot.val();
+      if (data) {
+        window._cachedActions = Array.isArray(data) ? data : Object.values(data);
+      } else {
+        window._cachedActions = defaultActions;
+        db.ref('actions').set(defaultActions);
+      }
+      if (document.getElementById('panel-actions').classList.contains('active')) {
+        renderActions();
+      }
+    });
 
     function renderActions() {
       var items = getActions();
