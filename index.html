@@ -7,28 +7,28 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
-      --purple: #8b7ec8;
-      --purple-light: #1e1a2e;
-      --purple-dark: #6c5eb5;
-      --pink: #c4a0b9;
-      --pink-light: #201a22;
-      --teal: #7a9ea8;
-      --teal-light: #172025;
-      --orange: #c4956a;
-      --orange-light: #201a15;
-      --blue: #6b8db5;
-      --blue-light: #151a22;
-      --green: #7aaa7a;
-      --green-light: #152015;
-      --bg: #0a0a12;
-      --surface: #13131f;
-      --text: #d4d0e0;
-      --text-secondary: #7a7590;
-      --border: #2a2640;
+      --purple: #7b68ee;
+      --purple-light: #eee8ff;
+      --purple-dark: #5a4fcf;
+      --pink: #a855c6;
+      --pink-light: #f3e8ff;
+      --teal: #4ea8b5;
+      --teal-light: #e0f5f8;
+      --orange: #7b68ee;
+      --orange-light: #eee8ff;
+      --blue: #5b8dd9;
+      --blue-light: #e8f0ff;
+      --green: #4caf7a;
+      --green-light: #e6f7ee;
+      --bg: #f0f0f8;
+      --surface: #ffffff;
+      --text: #2d2b3d;
+      --text-secondary: #7c7a8e;
+      --border: #d8d5e8;
       --radius: 16px;
-      --shadow: 0 4px 20px rgba(0,0,0,0.4);
-      --shadow-hover: 0 8px 32px rgba(139,126,200,0.2);
-      --font: Georgia, "Times New Roman", serif;
+      --shadow: 0 4px 20px rgba(100,80,160,0.08);
+      --shadow-hover: 0 8px 32px rgba(123,104,238,0.15);
+      --font: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,48 +38,45 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      background-image: radial-gradient(ellipse at 20% 50%, rgba(107,86,160,0.06) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 20%, rgba(100,120,160,0.04) 0%, transparent 50%);
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(123,104,238,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(168,85,198,0.04) 0%, transparent 50%);
     }
 
     /* Header */
     .header {
-      background: linear-gradient(180deg, #0d0d1a 0%, #151525 40%, #1a1528 100%);
-      color: #d4d0e0;
+      background: linear-gradient(135deg, #7b68ee 0%, #a855c6 50%, #5b8dd9 100%);
+      color: #fff;
       padding: 40px 24px 36px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid #2a2640;
     }
     .header::before {
-      content: "💀 🌙 ✦ 🦴 ✧ 🌑 💀";
+      content: "🎓 ✨ 🏊‍♀️ 🌟 📚 💫 🎓";
       position: absolute;
       top: 10px; left: 0; right: 0;
       font-size: 20px;
       letter-spacing: 20px;
-      opacity: 0.2;
+      opacity: 0.25;
       animation: float 10s ease-in-out infinite;
     }
     .header::after {
       content: "";
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(139,126,200,0.3), transparent);
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     }
     @keyframes float {
-      0%, 100% { transform: translateY(0); opacity: 0.2; }
-      50% { transform: translateY(-4px); opacity: 0.35; }
+      0%, 100% { transform: translateY(0); opacity: 0.25; }
+      50% { transform: translateY(-4px); opacity: 0.4; }
     }
     .header h1 {
-      font-size: 26px; font-weight: 400; margin-bottom: 6px;
-      position: relative; letter-spacing: 2px; text-transform: lowercase;
-      font-style: italic;
+      font-size: 28px; font-weight: 700; margin-bottom: 6px;
+      position: relative; letter-spacing: 0.5px;
     }
     .header p {
-      font-size: 13px; opacity: 0.5; position: relative;
-      letter-spacing: 1.5px; text-transform: lowercase;
+      font-size: 13px; opacity: 0.8; position: relative;
     }
 
     /* Stats bar */
@@ -140,7 +137,7 @@
       padding: 10px 12px; border: 1px solid var(--border);
       border-radius: 10px; font-family: var(--font); font-size: 14px;
       transition: border-color 0.2s; outline: none;
-      background: #1a1725; color: var(--text);
+      background: #fff; color: var(--text);
     }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: var(--purple);
@@ -216,7 +213,7 @@
     .detail-item p { font-size: 14px; font-weight: 500; }
 
     .notes-section h4 { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-    .note { background: #1a1725; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 13px; position: relative; border: 1px solid var(--border); }
+    .note { background: #f5f3ff; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 13px; position: relative; border: 1px solid var(--border); }
     .note .note-date { font-size: 10px; color: var(--text-secondary); }
     .note .note-delete { position: absolute; top: 6px; right: 8px; background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.5; }
     .note .note-delete:hover { opacity: 1; }
@@ -224,7 +221,7 @@
     .add-note-row input {
       flex: 1; padding: 8px 12px; border: 1px solid var(--border);
       border-radius: 8px; font-family: var(--font); font-size: 13px;
-      background: #1a1725; color: var(--text);
+      background: #fff; color: var(--text);
     }
     .add-note-row button {
       padding: 8px 16px; background: var(--purple); color: #fff;
@@ -340,7 +337,7 @@
     .editable-field .ef-input {
       flex: 1; padding: 4px 8px; border: 2px solid var(--purple);
       border-radius: 8px; font-family: var(--font); font-size: 13px;
-      outline: none; min-width: 0; background: #1a1725; color: var(--text);
+      outline: none; min-width: 0; background: #fff; color: var(--text);
     }
     .editable-field .ef-save {
       background: var(--purple); color: #fff; border: none;
@@ -396,18 +393,18 @@
 
   <div class="stats-bar" id="statsBar">
     <div class="stat stat--total"><div class="stat__number" id="statTotal">0</div><div class="stat__label">Schools</div></div>
-    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Ready to Apply</div></div>
+    <div class="stat stat--love"><div class="stat__number" id="statLove">0</div><div class="stat__label">💜 Ready</div></div>
     <div class="stat stat--like"><div class="stat__number" id="statLike">0</div><div class="stat__label">💚 Visited</div></div>
-    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">🧡 Considering</div></div>
+    <div class="stat stat--maybe"><div class="stat__number" id="statMaybe">0</div><div class="stat__label">🧡 Interested</div></div>
   </div>
 
   <div class="container">
 
     <div class="tabs">
-      <button class="tab active" data-tab="schools" onclick="switchTab('schools')">💀 Schools</button>
-      <button class="tab" data-tab="add" onclick="switchTab('add')">✦ Add New</button>
-      <button class="tab" data-tab="map" onclick="switchTab('map')">🌙 Map</button>
-      <button class="tab" data-tab="journal" onclick="switchTab('journal')">🦴 Journal</button>
+      <button class="tab active" data-tab="schools" onclick="switchTab('schools')">🎓 Schools</button>
+      <button class="tab" data-tab="add" onclick="switchTab('add')">➕ Add New</button>
+      <button class="tab" data-tab="map" onclick="switchTab('map')">🗺️ Map</button>
+      <button class="tab" data-tab="journal" onclick="switchTab('journal')">📓 Journal</button>
     </div>
 
     <!-- SCHOOLS PANEL -->
@@ -419,9 +416,9 @@
       </div>
       <div class="filter-bar" id="filterBar">
         <button class="filter-chip active" data-filter="all" onclick="filterSchools('all')">All</button>
-        <button class="filter-chip" data-filter="love" onclick="filterSchools('love')">💜 Ready to Apply</button>
+        <button class="filter-chip" data-filter="love" onclick="filterSchools('love')">💜 Ready</button>
         <button class="filter-chip" data-filter="like" onclick="filterSchools('like')">💚 Visited</button>
-        <button class="filter-chip" data-filter="maybe" onclick="filterSchools('maybe')">🧡 Considering</button>
+        <button class="filter-chip" data-filter="maybe" onclick="filterSchools('maybe')">🧡 Interested</button>
         <button class="filter-chip" data-filter="applied" onclick="filterSchools('applied')">💙 Applied</button>
         <button class="filter-chip" data-filter="accepted" onclick="filterSchools('accepted')">💚 Accepted</button>
       </div>
@@ -444,9 +441,9 @@
           <div class="form-group">
             <label>Interest Level</label>
             <select id="schoolInterest">
-              <option value="maybe" selected>🧡 Considering</option>
+              <option value="maybe" selected>🧡 Interested</option>
               <option value="like">💚 Visited</option>
-              <option value="love">💜 Ready to Apply</option>
+              <option value="love">💜 Ready</option>
             </select>
           </div>
           <div class="form-group">
@@ -519,9 +516,9 @@
     <div class="panel" id="panel-map">
       <div id="mapContainer"></div>
       <div class="map-legend">
-        <span><span class="map-dot" style="background:#c4956a;"></span> Considering</span>
-        <span><span class="map-dot" style="background:#7a9ea8;"></span> Visited</span>
-        <span><span class="map-dot" style="background:#c4a0b9;"></span> Ready to Apply</span>
+        <span><span class="map-dot" style="background:#7b68ee;"></span> Interested</span>
+        <span><span class="map-dot" style="background:#4ea8b5;"></span> Visited</span>
+        <span><span class="map-dot" style="background:#a855c6;"></span> Ready</span>
         <span><span class="map-dot" style="background:#6b8db5;"></span> Applied</span>
         <span><span class="map-dot" style="background:#7aaa7a;"></span> Accepted</span>
       </div>
@@ -823,7 +820,7 @@
           if (h.action === 'photo') return `<div class="activity-item"><span class="activity-icon">📸</span><div class="activity-content">Added ${h.count} photo(s)<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'edit') return `<div class="activity-item"><span class="activity-icon">✏️</span><div class="activity-content">Changed ${h.field}: ${h.oldVal||'(empty)'} → ${h.newVal||'(empty)'}<div class="activity-date">${dateStr}</div></div></div>`;
           if (h.action === 'status') {
-            const labels = {love:'💜 Ready to Apply',like:'💚 Visited',maybe:'🧡 Considering',applied:'💙 Applied',accepted:'💚 Accepted'};
+            const labels = {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'💚 Accepted'};
             return `<div class="activity-item"><span class="activity-icon">🏷️</span><div class="activity-content">Status: ${labels[h.oldVal]||h.oldVal} → ${labels[h.newVal]||h.newVal}<div class="activity-date">${dateStr}</div></div></div>`;
           }
           return '';
@@ -841,7 +838,7 @@
             </div>
             <div class="card-actions">
               <span class="interest-badge" data-interest="${s.interest}">${
-                {love:'💜 Ready to Apply',like:'💚 Visited',maybe:'🧡 Considering',applied:'💙 Applied',accepted:'💚 Accepted'}[s.interest]
+                {love:'💜 Ready',like:'💚 Visited',maybe:'🧡 Interested',applied:'💙 Applied',accepted:'💚 Accepted'}[s.interest]
               }</span>
               <button class="btn-icon" onclick="event.stopPropagation();deleteSchool('${s.id}')" title="Remove">🗑️</button>
             </div>
@@ -862,9 +859,9 @@
               <div class="detail-item">
                 <label>Status</label>
                 <select onchange="changeInterest('${s.id}',this.value)" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-                  <option value="maybe" ${s.interest==='maybe'?'selected':''}>🧡 Considering</option>
+                  <option value="maybe" ${s.interest==='maybe'?'selected':''}>🧡 Interested</option>
                   <option value="like" ${s.interest==='like'?'selected':''}>💚 Visited</option>
-                  <option value="love" ${s.interest==='love'?'selected':''}>💜 Ready to Apply</option>
+                  <option value="love" ${s.interest==='love'?'selected':''}>💜 Ready</option>
                   <option value="applied" ${s.interest==='applied'?'selected':''}>💙 Applied</option>
                   <option value="accepted" ${s.interest==='accepted'?'selected':''}>💚 Accepted</option>
                 </select>
@@ -988,7 +985,7 @@
       const container = document.getElementById('mapContainer');
       if (!leafletMap) {
         leafletMap = L.map('mapContainer', { scrollWheelZoom: true }).setView([36.5, -119.5], 6);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
           maxZoom: 19
         }).addTo(leafletMap);
@@ -999,8 +996,8 @@
       mapMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
       mapMarkers = [];
 
-      const statusColors = { maybe: '#c4956a', like: '#7a9ea8', love: '#c4a0b9', applied: '#6b8db5', accepted: '#7aaa7a' };
-      const statusLabels = { maybe: 'Considering', like: 'Visited', love: 'Ready to Apply', applied: 'Applied', accepted: 'Accepted' };
+      const statusColors = { maybe: '#7b68ee', like: '#4ea8b5', love: '#a855c6', applied: '#5b8dd9', accepted: '#4caf7a' };
+      const statusLabels = { maybe: 'Interested', like: 'Visited', love: 'Ready', applied: 'Applied', accepted: 'Accepted' };
 
       schools.forEach(function(s) {
         const coords = schoolCoords[s.name];
@@ -1017,8 +1014,8 @@
         const divLine = s.division ? '<br>🏅 ' + s.division : '';
         const statusLine = '<br>Status: ' + (statusLabels[s.interest] || s.interest);
         marker.bindPopup(
-          '<div style="font-family:Georgia,serif;color:#d4d0e0;font-size:13px;"><b>' + s.name + '</b><br>📍 ' + (s.location || '') + costLine + divLine + statusLine + '</div>',
-          { className: 'dark-popup' }
+          '<div style="font-family:Segoe UI,sans-serif;color:#2d2b3d;font-size:13px;"><b>' + s.name + '</b><br>📍 ' + (s.location || '') + costLine + divLine + statusLine + '</div>',
+          { className: 'light-popup' }
         );
         mapMarkers.push(marker);
       });
@@ -1031,9 +1028,9 @@
     }
   </script>
   <style>
-    .dark-popup .leaflet-popup-content-wrapper { background: #1a1725; color: #d4d0e0; border: 1px solid #2a2640; border-radius: 12px; }
-    .dark-popup .leaflet-popup-tip { background: #1a1725; }
-    .dark-popup .leaflet-popup-close-button { color: #7a7590; }
+    .light-popup .leaflet-popup-content-wrapper { background: #fff; color: #2d2b3d; border: 1px solid #d8d5e8; border-radius: 12px; box-shadow: 0 4px 16px rgba(100,80,160,0.12); }
+    .light-popup .leaflet-popup-tip { background: #fff; }
+    .light-popup .leaflet-popup-close-button { color: #7c7a8e; }
   </style>
 </body>
 </html>
