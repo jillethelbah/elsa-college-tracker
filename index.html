@@ -662,6 +662,15 @@
         );
       }
 
+      // Sort: status order (Interested→Accepted), then alphabetical
+      const statusOrder = { maybe: 0, like: 1, love: 2, applied: 3, accepted: 4 };
+      filtered.sort((a, b) => {
+        const sa = statusOrder[a.interest] !== undefined ? statusOrder[a.interest] : 99;
+        const sb = statusOrder[b.interest] !== undefined ? statusOrder[b.interest] : 99;
+        if (sa !== sb) return sa - sb;
+        return a.name.localeCompare(b.name);
+      });
+
       if (filtered.length === 0) {
         list.innerHTML = `<div class="empty-state">
           <div class="emoji">${schools.length === 0 ? '🎓' : '🔍'}</div>
